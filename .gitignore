@@ -1,0 +1,11 @@
+*.pdf
+*.psd
+
+node_modules/
+build/
+
+package-lock.json
+
+Desktop.ini
+Thumbs.db
+ehthumbs.db

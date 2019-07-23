@@ -1,0 +1,30 @@
+#Auto-detect
+* text=auto
+
+#Source code
+*.css   text
+*.html  text
+*.js    text
+*.json  text
+*.scss  text
+
+#Documentation
+*.txt  text
+
+#Configs
+.gitattributes     text
+.gitignore         text
+package-lock.json  text -diff
+
+#Graphics
+*.ico   binary
+*.gif   binary
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.svg   text
+*.webp  binary
+
+#Fonts
+*.woff   binary
+*.woff2  binary

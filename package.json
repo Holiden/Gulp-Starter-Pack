@@ -1,0 +1,43 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "My template for web development",
+  "main": "gulpfile.js",
+  "scripts": {
+    "dev": "gulp --dev --sync",
+    "fix": "gulp --dev",
+    "build": "gulp --build"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.6.1",
+    "browser-sync": "^2.26.7",
+    "del": "^5.0.0",
+    "gulp": "^4.0.2",
+    "gulp-cheerio": "^0.6.3",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-favicons": "^2.3.1",
+    "gulp-group-css-media-queries": "^1.2.2",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^6.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-purgecss": "^1.2.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-svgstore": "^7.0.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-webp": "^4.0.1",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-pngquant": "^8.0.0",
+    "imagemin-webp": "^5.1.0",
+    "postcss-pxtorem": "^4.0.1",
+    "yargs": "^13.3.0"
+  },
+  "author": "Alexander Holiden Diakonov",
+  "license": "ISC",
+  "browserslist": "defaults"
+}
