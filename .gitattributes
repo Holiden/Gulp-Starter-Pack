@@ -6,9 +6,11 @@
 *.html  text
 *.js    text
 *.json  text
+*.sass  text
 *.scss  text
 
 #Documentation
+*.md   text
 *.txt  text
 
 #Configs

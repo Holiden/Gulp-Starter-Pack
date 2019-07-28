@@ -1,11 +1,15 @@
+#Filename extension
 *.pdf
 *.psd
 
-node_modules/
-build/
-
-package-lock.json
-
+#File
 Desktop.ini
 Thumbs.db
 ehthumbs.db
+
+#Folder
+node_modules
+build
+
+#Configs
+package-lock.json

@@ -25,6 +25,7 @@ var favicons = require('gulp-favicons');
 var svgstore = require('gulp-svgstore');
 var pxtorem = require('postcss-pxtorem');
 var cheerio = require('gulp-cheerio');
+var notify = require("gulp-notify");
 
 var paths = {
   views: {
@@ -69,7 +70,15 @@ var paths = {
 
 function views() {
   return gulp.src(paths.views.source)
-    .pipe(plumber())
+    .pipe(plumber({errorHandler: notify.onError({
+      message: 'Error: <%= error.message %>',
+      title: 'HTML Error',
+      wait: true
+      }),
+      function() {
+      this.emit('end');
+      }
+    }))
     .pipe(gulpif(argv.build, replace('.css', '.min.css')))
     .pipe(gulpif(argv.build, replace('.js', '.min.js')))
     .pipe(gulpif(argv.build, htmlmin({
@@ -84,7 +93,15 @@ function views() {
 
 function styles() {
   return gulp.src(paths.styles.source)
-    .pipe(plumber())
+    .pipe(plumber({errorHandler: notify.onError({
+      message: 'Error: <%= error.message %>',
+      title: 'CSS Error',
+      wait: true
+      }),
+      function() {
+      this.emit('end');
+      }
+    }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
     .pipe(sass())
     .pipe(gcmq())
@@ -98,9 +115,7 @@ function styles() {
       autoprefixer({
         grid: 'no-autoplace'
       }),
-      pxtorem({
-        mediaQuery: true
-      })
+      pxtorem()
     ]))
     .pipe(gulpif(argv.build, cleancss({
       level: 2
@@ -110,14 +125,25 @@ function styles() {
       suffix: '.min'
       })
     ))
-    .pipe(gulpif(argv.dev, sourcemaps.write('./maps/', {addComment: false})))
+    .pipe(gulpif(argv.dev, sourcemaps.write('./maps/', {
+      addComment: false
+      }
+    )))
     .pipe(gulp.dest(paths.styles.build))
     .pipe(browsersync.stream());
 }
 
 function scripts() {
   return gulp.src(paths.scripts.source)
-    .pipe(plumber())
+    .pipe(plumber({errorHandler: notify.onError({
+      message: 'Error: <%= error.message %>',
+      title: 'JS Error',
+      wait: true
+      }),
+      function() {
+      this.emit('end');
+      }
+    }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
     .pipe(concat('main.js'))
     .pipe(gulpif(argv.build, uglify()))
@@ -125,7 +151,10 @@ function scripts() {
       suffix: '.min'
       })
     ))
-    .pipe(gulpif(argv.dev, sourcemaps.write('./maps/', {addComment: false})))
+    .pipe(gulpif(argv.dev, sourcemaps.write('./maps/', {
+      addComment: false
+      }
+    )))
     .pipe(gulp.dest(paths.scripts.build))
     .on('end', browsersync.reload);
 }
@@ -138,8 +167,8 @@ function images() {
         quality: 70
       }),
       imagemin.gifsicle({
-        optimizationLevel: 3,
-        interlaced: true
+        interlaced: true,
+        optimizationLevel: 3
       }),
       imagemin.svgo({
         plugins: [
@@ -264,7 +293,7 @@ function fonts() {
     .pipe(gulp.dest(paths.fonts.build))
 }
 
-function clear() {
+function clean() {
   return del('./build/*')
 }
 
@@ -288,4 +317,4 @@ function watch() {
   gulp.watch(paths.fonts.source, fonts);
 }
 
-gulp.task('default', gulp.series(clear, gulp.parallel(views, styles, scripts, images, imagewebp, sprites, icon, fonts), watch));
+gulp.task('default', gulp.series(clean, gulp.parallel(views, styles, scripts, images, imagewebp, sprites, icon, fonts), watch));

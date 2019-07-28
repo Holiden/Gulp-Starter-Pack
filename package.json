@@ -21,6 +21,7 @@
     "gulp-htmlmin": "^5.0.1",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^6.0.0",
+    "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
     "gulp-purgecss": "^1.2.0",
