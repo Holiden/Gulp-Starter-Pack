@@ -21,11 +21,13 @@ var imageminpngquant = require('imagemin-pngquant');
 var imageminmozjpeg = require('imagemin-mozjpeg');
 var imageminwebp = require('imagemin-webp');
 var webp = require('gulp-webp');
-var favicons = require('gulp-favicons');
+var favicon = require('gulp-favicons');
 var svgstore = require('gulp-svgstore');
 var pxtorem = require('postcss-pxtorem');
 var cheerio = require('gulp-cheerio');
 var notify = require("gulp-notify");
+var debug = require('gulp-debug');
+var newer = require('gulp-newer');
 
 var paths = {
   views: {
@@ -47,7 +49,7 @@ var paths = {
     ],
     build: './build/images/'
   },
-  imagewebp: {
+  imageswebp: {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
@@ -70,6 +72,7 @@ var paths = {
 
 function views() {
   return gulp.src(paths.views.source)
+    .pipe(newer(paths.views.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
       title: 'HTML Error',
@@ -87,12 +90,16 @@ function views() {
       minifyJS: true,
       removeComments: true
     })))
+    .pipe(debug({
+      title: 'HTML:'
+    }))
     .pipe(gulp.dest(paths.views.build))
     .on('end', browsersync.reload);
 }
 
 function styles() {
   return gulp.src(paths.styles.source)
+    .pipe(newer(paths.styles.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
       title: 'CSS Error',
@@ -129,12 +136,16 @@ function styles() {
       addComment: false
       }
     )))
+    .pipe(debug({
+      title: 'CSS:'
+    }))
     .pipe(gulp.dest(paths.styles.build))
     .pipe(browsersync.stream());
 }
 
 function scripts() {
   return gulp.src(paths.scripts.source)
+    .pipe(newer(paths.scripts.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
       title: 'JS Error',
@@ -155,12 +166,16 @@ function scripts() {
       addComment: false
       }
     )))
+    .pipe(debug({
+      title: 'Scripts:'
+    }))
     .pipe(gulp.dest(paths.scripts.build))
     .on('end', browsersync.reload);
 }
 
 function images() {
   return gulp.src(paths.images.source)
+    .pipe(newer(paths.images.build))
     .pipe(gulpif(argv.build, imagemin([
       imageminmozjpeg({
         smooth: 10,
@@ -202,11 +217,15 @@ function images() {
         quality: [0, 1]
       })
     ])))
+    .pipe(debug({
+      title: 'Images:'
+    }))
     .pipe(gulp.dest(paths.images.build))
 }
 
-function imagewebp() {
+function imageswebp() {
   return gulp.src(paths.imagewebp.source)
+    .pipe(newer(paths.imagewebp.build))
     .pipe(gulpif(argv.build, webp(imagemin([
       imageminwebp({
         alphaQuality: 70,
@@ -215,11 +234,13 @@ function imagewebp() {
         quality: 70
       })
     ]))))
+    .pipe(debug({title: 'ImagesWebp:'}))
     .pipe(gulp.dest(paths.imagewebp.build))
 }
 
 function sprites() {
   return gulp.src(paths.sprites.source)
+    .pipe(newer(paths.sprites.build))
     .pipe(rename({
       prefix: 'icon_'
     }))
@@ -268,12 +289,16 @@ function sprites() {
       parserOptions: {xmlMode: true}
     }))
     .pipe(rename('sprite.svg'))
+    .pipe(debug({
+      title: 'Sprites:'
+    }))
     .pipe(gulp.dest(paths.sprites.build))
 }
 
-function icon() {
+function favicons() {
   return gulp.src(paths.favicons.source)
-    .pipe(favicons({
+    .pipe(newer(paths.favicons.build))
+    .pipe(favicon({
       icons: {
         android: false,
         appleIcon: false,
@@ -285,11 +310,18 @@ function icon() {
         yandex: false
       }
     }))
+    .pipe(debug({
+      title: 'Favicons:'
+    }))
     .pipe(gulp.dest(paths.favicons.build))
 }
 
 function fonts() {
   return gulp.src(paths.fonts.source)
+    .pipe(newer(paths.fonts.build))
+    .pipe(debug({
+      title: 'Fonts:'
+    }))
     .pipe(gulp.dest(paths.fonts.build))
 }
 
@@ -311,10 +343,10 @@ function watch() {
   gulp.watch(paths.styles.source, styles);
   gulp.watch(paths.scripts.source, scripts);
   gulp.watch(paths.images.source, images);
-  gulp.watch(paths.imagewebp.source, imagewebp);
+  gulp.watch(paths.imageswebp.source, imagewebp);
   gulp.watch(paths.sprites.source, sprites);
-  gulp.watch(paths.favicons.source, icon);
+  gulp.watch(paths.favicons.source, favicons);
   gulp.watch(paths.fonts.source, fonts);
 }
 
-gulp.task('default', gulp.series(clean, gulp.parallel(views, styles, scripts, images, imagewebp, sprites, icon, fonts), watch));
+gulp.task('default', gulp.series(clean, gulp.parallel(views, styles, scripts, images, imageswebp, sprites, favicons, fonts), watch));
