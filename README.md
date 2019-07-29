@@ -1,4 +1,8 @@
 # Template
+![Version Status](https://img.shields.io/github/package-json/v/Holiden/Template?color=brightgreen&label=Version&style=flat-square)
+![License: MIT](https://img.shields.io/github/license/Holiden/Template?color=brightgreen&label=License&style=flat-square)
+![devDependencies Status](https://img.shields.io/david/dev/Holiden/Template?color=brightgreen&label=Dependencies&style=flat-square)
+
 Стартовый шаблон для вёрстки
 
 Версия: 1.2.0  
