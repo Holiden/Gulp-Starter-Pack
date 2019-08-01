@@ -35,7 +35,7 @@ var paths = {
     build: './build/'
   },
   styles: {
-    source: './source/styles/**/*.{css,scss}',
+    source: './source/styles/**/*.{css,sass,scss}',
     build: './build/styles/'
   },
   scripts: {
@@ -45,7 +45,8 @@ var paths = {
   images: {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png,svg}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/svg/*.svg'
     ],
     build: './build/images/'
   },
@@ -114,7 +115,6 @@ function styles() {
     .pipe(gcmq())
     .pipe(purgecss({
       content: [paths.views.source],
-      fontFace: true,
       keyframes: true,
       whitelistPatterns: [/js/]
     }))
@@ -224,9 +224,12 @@ function images() {
 }
 
 function imageswebp() {
-  return gulp.src(paths.imagewebp.source)
-    .pipe(newer(paths.imagewebp.build))
-    .pipe(gulpif(argv.build, webp(imagemin([
+  return gulp.src(paths.imageswebp.source)
+    .pipe(newer({
+      dest: paths.imageswebp.build,
+      ext: '.webp'
+    }))
+    .pipe(webp(gulpif(argv.build, imagemin([
       imageminwebp({
         alphaQuality: 70,
         lossless: true,
@@ -235,12 +238,11 @@ function imageswebp() {
       })
     ]))))
     .pipe(debug({title: 'ImagesWebp:'}))
-    .pipe(gulp.dest(paths.imagewebp.build))
+    .pipe(gulp.dest(paths.imageswebp.build))
 }
 
 function sprites() {
   return gulp.src(paths.sprites.source)
-    .pipe(newer(paths.sprites.build))
     .pipe(rename({
       prefix: 'icon_'
     }))
@@ -343,10 +345,10 @@ function watch() {
   gulp.watch(paths.styles.source, styles);
   gulp.watch(paths.scripts.source, scripts);
   gulp.watch(paths.images.source, images);
-  gulp.watch(paths.imageswebp.source, imagewebp);
+  gulp.watch(paths.imageswebp.source, imageswebp);
   gulp.watch(paths.sprites.source, sprites);
   gulp.watch(paths.favicons.source, favicons);
   gulp.watch(paths.fonts.source, fonts);
 }
 
-gulp.task('default', gulp.series(clean, gulp.parallel(views, styles, scripts, images, imageswebp, sprites, favicons, fonts), watch));
+gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, sprites, favicons, fonts, watch));

@@ -1,12 +1,10 @@
 # Template
-![Version Status](https://img.shields.io/github/package-json/v/Holiden/Template?color=brightgreen&label=Version&style=flat-square)
-![License: MIT](https://img.shields.io/github/license/Holiden/Template?color=brightgreen&label=License&style=flat-square)
-![devDependencies Status](https://img.shields.io/david/dev/Holiden/Template?color=brightgreen&label=Dependencies&style=flat-square)
+![Publication Date](https://img.shields.io/static/v1?label=Release%20Date&message=23.07.2019&color=brightgreen&style=flat-square)
+![Version Status](https://img.shields.io/github/package-json/v/Holiden/Template?label=Version&color=brightgreen&style=flat-square)
+![License: MIT](https://img.shields.io/github/license/Holiden/Template?label=License&color=brightgreen&style=flat-square)
+![devDependencies Status](https://img.shields.io/david/dev/Holiden/Template?label=Dependencies&color=brightgreen&style=flat-square)
 
 Стартовый шаблон для вёрстки
-
-Версия: 1.2.0  
-Дата публикации: 23.07.2019
 
 ## Особенности
 1. **HTML:**

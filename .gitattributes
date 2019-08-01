@@ -10,8 +10,9 @@
 *.scss  text
 
 #Documentation
-*.md   text
-*.txt  text
+*.md     text
+*.txt    text
+LICENSE  text
 
 #Configs
 .gitattributes     text
