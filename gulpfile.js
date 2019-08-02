@@ -13,7 +13,6 @@ var replace = require('gulp-replace');
 var plumber = require('gulp-plumber');
 var argv = require('yargs').argv;
 var htmlmin = require('gulp-htmlmin');
-var concat = require('gulp-concat');
 var purgecss = require('gulp-purgecss');
 var gcmq = require('gulp-group-css-media-queries');
 var imagemin = require('gulp-imagemin');
@@ -28,19 +27,35 @@ var cheerio = require('gulp-cheerio');
 var notify = require("gulp-notify");
 var debug = require('gulp-debug');
 var newer = require('gulp-newer');
+var fileinclude = require('gulp-file-include');
 
 var paths = {
   views: {
-    source: './source/views/**/*.html',
-    build: './build/'
+    source: [
+      './source/views/index.html',
+      './source/views/pages/*.html'
+    ],
+    build: './build/',
+    watch: [
+      './source/blocks/**/*.html',
+      './source/views/**/*.html'
+    ]
   },
   styles: {
-    source: './source/styles/**/*.{css,sass,scss}',
-    build: './build/styles/'
+    source: './source/styles/main.{css,sass,scss}',
+    build: './build/styles/',
+    watch: [
+      './source/blocks/**/*.{css,sass,scss}',
+      './source/styles/**/*.{css,sass,scss}'
+    ]
   },
   scripts: {
-    source: './source/scripts/**/*.js',
-    build: './build/scripts/'
+    source: './source/scripts/main.js',
+    build: './build/scripts/',
+    watch: [
+      './source/blocks/**/*.js',
+      './source/scripts/**/*.js'
+    ]
   },
   images: {
     source: [
@@ -48,26 +63,38 @@ var paths = {
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
       '!./source/images/svg/*.svg'
     ],
-    build: './build/images/'
+    build: './build/images/',
+    watch: [
+      './source/images/**/*.{gif,jpg,jpeg,png,svg}',
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/svg/*.svg'
+    ]
   },
   imageswebp: {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
     ],
-    build: './build/images/'
-  },
-  sprites: {
-    source: './source/images/svg/*.svg',
-    build: './build/images/sprites/'
+    build: './build/images/',
+    watch: [
+      './source/images/**/*.{gif,jpg,jpeg,png}',
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+    ]
   },
   favicons: {
     source: './source/images/favicons/*.{gif,jpg,jpeg,png}',
-    build: './build/images/favicons/'
+    build: './build/images/favicons/',
+    watch: './source/images/favicons/*.{gif,jpg,jpeg,png}'
   },
+  sprites: {
+    source: './source/images/svg/*.svg',
+    build: './build/images/sprites/',
+    watch: './source/images/svg/*.svg'
+  },  
   fonts: {
     source: './source/fonts/**/*.{woff,woff2}',
-    build: './build/fonts/'
+    build: './build/fonts/',
+    watch: './source/fonts/**/*.{woff,woff2}'
   }
 };
 
@@ -83,6 +110,7 @@ function views() {
       this.emit('end');
       }
     }))
+    .pipe(fileinclude())
     .pipe(gulpif(argv.build, replace('.css', '.min.css')))
     .pipe(gulpif(argv.build, replace('.js', '.min.js')))
     .pipe(gulpif(argv.build, htmlmin({
@@ -114,7 +142,9 @@ function styles() {
     .pipe(sass())
     .pipe(gcmq())
     .pipe(purgecss({
-      content: [paths.views.source],
+      content: [
+        './build/**.html'
+      ],
       keyframes: true,
       whitelistPatterns: [/js/]
     }))
@@ -156,7 +186,6 @@ function scripts() {
       }
     }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
-    .pipe(concat('main.js'))
     .pipe(gulpif(argv.build, uglify()))
     .pipe(gulpif(argv.build, rename({
       suffix: '.min'
@@ -241,6 +270,27 @@ function imageswebp() {
     .pipe(gulp.dest(paths.imageswebp.build))
 }
 
+function favicons() {
+  return gulp.src(paths.favicons.source)
+    .pipe(newer(paths.favicons.build))
+    .pipe(favicon({
+      icons: {
+        android: false,
+        appleIcon: false,
+        appleStartup: false,
+        coast: false,
+        favicons: true,
+        firefox: false,
+        windows: false,
+        yandex: false
+      }
+    }))
+    .pipe(debug({
+      title: 'Favicons:'
+    }))
+    .pipe(gulp.dest(paths.favicons.build))
+}
+
 function sprites() {
   return gulp.src(paths.sprites.source)
     .pipe(rename({
@@ -297,27 +347,6 @@ function sprites() {
     .pipe(gulp.dest(paths.sprites.build))
 }
 
-function favicons() {
-  return gulp.src(paths.favicons.source)
-    .pipe(newer(paths.favicons.build))
-    .pipe(favicon({
-      icons: {
-        android: false,
-        appleIcon: false,
-        appleStartup: false,
-        coast: false,
-        favicons: true,
-        firefox: false,
-        windows: false,
-        yandex: false
-      }
-    }))
-    .pipe(debug({
-      title: 'Favicons:'
-    }))
-    .pipe(gulp.dest(paths.favicons.build))
-}
-
 function fonts() {
   return gulp.src(paths.fonts.source)
     .pipe(newer(paths.fonts.build))
@@ -341,14 +370,14 @@ function watch() {
       ui: false
     })
   };
-  gulp.watch(paths.views.source, views);
-  gulp.watch(paths.styles.source, styles);
-  gulp.watch(paths.scripts.source, scripts);
-  gulp.watch(paths.images.source, images);
-  gulp.watch(paths.imageswebp.source, imageswebp);
-  gulp.watch(paths.sprites.source, sprites);
-  gulp.watch(paths.favicons.source, favicons);
-  gulp.watch(paths.fonts.source, fonts);
+  gulp.watch(paths.views.watch, views);
+  gulp.watch(paths.styles.watch, styles);
+  gulp.watch(paths.scripts.watch, scripts);
+  gulp.watch(paths.images.watch, images);
+  gulp.watch(paths.imageswebp.watch, imageswebp);
+  gulp.watch(paths.sprites.watch, sprites);
+  gulp.watch(paths.favicons.watch, favicons);
+  gulp.watch(paths.fonts.watch, fonts);
 }
 
-gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, sprites, favicons, fonts, watch));
+gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, favicons, sprites, fonts, watch));
