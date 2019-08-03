@@ -139,7 +139,9 @@ function styles() {
       }
     }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
-    .pipe(sass())
+    .pipe(sass({
+      includePaths: require('scss-resets').includePaths
+    }))
     .pipe(gcmq())
     .pipe(purgecss({
       content: [
