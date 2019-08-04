@@ -8,8 +8,8 @@ Thumbs.db
 ehthumbs.db
 
 #Folder
-node_modules
 build
+node_modules
 
 #Configs
 package-lock.json

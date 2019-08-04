@@ -3,6 +3,7 @@
   "version": "1.4.0",
   "description": "My template for web development",
   "keywords": [
+    "build",
     "gulp",
     "template",
     "web"

@@ -1,1 +1,1 @@
-import '../blocks/modules';
+import '../components/components';
