@@ -37,7 +37,7 @@ var paths = {
     ],
     build: './build/',
     watch: [
-      './source/blocks/**/*.html',
+      './source/components/**/*.html',
       './source/views/**/*.html'
     ]
   },
@@ -45,7 +45,7 @@ var paths = {
     source: './source/styles/main.{css,sass,scss}',
     build: './build/styles/',
     watch: [
-      './source/blocks/**/*.{css,sass,scss}',
+      './source/components/**/*.{css,sass,scss}',
       './source/styles/**/*.{css,sass,scss}'
     ]
   },
@@ -53,7 +53,7 @@ var paths = {
     source: './source/scripts/main.js',
     build: './build/scripts/',
     watch: [
-      './source/blocks/**/*.js',
+      './source/components/**/*.js',
       './source/scripts/**/*.js'
     ]
   },
@@ -100,11 +100,9 @@ var paths = {
 
 function views() {
   return gulp.src(paths.views.source)
-    .pipe(newer(paths.views.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
-      title: 'HTML Error',
-      wait: true
+      title: 'HTML Error'
       }),
       function() {
       this.emit('end');
@@ -128,7 +126,6 @@ function views() {
 
 function styles() {
   return gulp.src(paths.styles.source)
-    .pipe(newer(paths.styles.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
       title: 'CSS Error',
@@ -139,9 +136,7 @@ function styles() {
       }
     }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
-    .pipe(sass({
-      includePaths: require('scss-resets').includePaths
-    }))
+    .pipe(sass())
     .pipe(gcmq())
     .pipe(purgecss({
       content: [
@@ -177,7 +172,6 @@ function styles() {
 
 function scripts() {
   return gulp.src(paths.scripts.source)
-    .pipe(newer(paths.scripts.build))
     .pipe(plumber({errorHandler: notify.onError({
       message: 'Error: <%= error.message %>',
       title: 'JS Error',
