@@ -1,7 +1,7 @@
-@import "./base/fonts";
-@import "./base/general";
+@import "./library/library";
 @import "./helpers/functions";
 @import "./helpers/mixins";
 @import "./helpers/variables";
-@import "./vendor/libs";
+@import "./services/fonts";
+@import "./services/general";
 @import "../components/components";

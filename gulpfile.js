@@ -13,6 +13,7 @@ var replace = require('gulp-replace');
 var plumber = require('gulp-plumber');
 var argv = require('yargs').argv;
 var htmlmin = require('gulp-htmlmin');
+var concat = require('gulp-concat');
 var purgecss = require('gulp-purgecss');
 var gcmq = require('gulp-group-css-media-queries');
 var imagemin = require('gulp-imagemin');
@@ -23,6 +24,7 @@ var webp = require('gulp-webp');
 var favicon = require('gulp-favicons');
 var svgstore = require('gulp-svgstore');
 var pxtorem = require('postcss-pxtorem');
+var focus = require('postcss-focus');
 var cheerio = require('gulp-cheerio');
 var notify = require("gulp-notify");
 var debug = require('gulp-debug');
@@ -50,7 +52,7 @@ var paths = {
     ]
   },
   scripts: {
-    source: './source/scripts/main.js',
+    source: './source/scripts/**/*.js',
     build: './build/scripts/',
     watch: [
       './source/components/**/*.js',
@@ -149,7 +151,8 @@ function styles() {
       autoprefixer({
         grid: 'no-autoplace'
       }),
-      pxtorem()
+      pxtorem(),
+      focus()
     ]))
     .pipe(gulpif(argv.build, cleancss({
       level: 2
@@ -182,6 +185,7 @@ function scripts() {
       }
     }))
     .pipe(gulpif(argv.dev, sourcemaps.init()))
+    .pipe(concat('main.js'))
     .pipe(gulpif(argv.build, uglify()))
     .pipe(gulpif(argv.build, rename({
       suffix: '.min'
