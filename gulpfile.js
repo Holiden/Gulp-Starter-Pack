@@ -110,7 +110,9 @@ function views() {
       this.emit('end');
       }
     }))
-    .pipe(fileinclude())
+    .pipe(fileinclude({
+      prefix: '@'
+    }))
     .pipe(gulpif(argv.build, replace('.css', '.min.css')))
     .pipe(gulpif(argv.build, replace('.js', '.min.js')))
     .pipe(gulpif(argv.build, htmlmin({
@@ -217,17 +219,21 @@ function images() {
       imagemin.svgo({
         plugins: [
           {cleanupAttrs: true},
+          {cleanupListOfValues: true},
           {cleanupNumericValues: {
             floatPrecision: 0
             }
           },
           {collapseGroups: true},
+          {convertColors: true},
           {convertEllipseToCircle: true},
           {convertShapeToPath: true},
           {mergePaths: true},
           {minifyStyles: true},
+          {moveElemsAttrsToGroup: true},
           {removeComments: true},
           {removeDesc: true},
+          {removeDimensions: true},
           {removeDoctype: true},
           {removeEditorsNSData: true},
           {removeEmptyAttrs: true},
@@ -235,8 +241,15 @@ function images() {
           {removeEmptyText: true},
           {removeHiddenElems: true},
           {removeMetadata: true},
+          {removeOffCanvasPaths: true},
+          {removeScriptElement: true},
+          {removeStyleElement: true},
           {removeTitle: true},
-          {removeXMLProcInst: true}
+          {removeUnknownsAndDefaults: true},
+          {removeUnusedNS: true},
+          {removeUselessStrokeAndFill: true},
+          {removeXMLProcInst: true},
+          {sortAttrs: true}
         ]
       }),
       imageminpngquant({
@@ -300,15 +313,18 @@ function sprites() {
       imagemin.svgo({
         plugins: [
           {cleanupAttrs: true},
+          {cleanupListOfValues: true},
           {cleanupNumericValues: {
             floatPrecision: 0
             }
           },
           {collapseGroups: true},
+          {convertColors: true},
           {convertEllipseToCircle: true},
           {convertShapeToPath: true},
           {mergePaths: true},
           {minifyStyles: true},
+          {moveElemsAttrsToGroup: true},
           {removeAttrs: {
             attrs: [
               'clip.*',
@@ -319,6 +335,7 @@ function sprites() {
           },
           {removeComments: true},
           {removeDesc: true},
+          {removeDimensions: true},
           {removeDoctype: true},
           {removeEditorsNSData: true},
           {removeEmptyAttrs: true},
@@ -326,8 +343,15 @@ function sprites() {
           {removeEmptyText: true},
           {removeHiddenElems: true},
           {removeMetadata: true},
+          {removeOffCanvasPaths: true},
+          {removeScriptElement: true},
+          {removeStyleElement: true},
           {removeTitle: true},
-          {removeXMLProcInst: true}
+          {removeUnknownsAndDefaults: true},
+          {removeUnusedNS: true},
+          {removeUselessStrokeAndFill: true},
+          {removeXMLProcInst: true},
+          {sortAttrs: true}
         ]
       })
     ]))
