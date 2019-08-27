@@ -22,21 +22,17 @@ var imageminmozjpeg = require('imagemin-mozjpeg');
 var imageminwebp = require('imagemin-webp');
 var webp = require('gulp-webp');
 var favicon = require('gulp-favicons');
-var svgstore = require('gulp-svgstore');
 var pxtorem = require('postcss-pxtorem');
 var focus = require('postcss-focus');
-var cheerio = require('gulp-cheerio');
 var notify = require("gulp-notify");
 var debug = require('gulp-debug');
 var newer = require('gulp-newer');
 var fileinclude = require('gulp-file-include');
+var svgSprite = require('gulp-svg-sprite');
 
 var paths = {
   views: {
-    source: [
-      './source/views/index.html',
-      './source/views/pages/*.html'
-    ],
+    source: './source/views/**/*.html',
     build: './build/',
     watch: [
       './source/components/**/*.html',
@@ -63,13 +59,15 @@ var paths = {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/svg/*.svg'
+      '!./source/images/svg/stack/*.svg',
+      '!./source/images/svg/symbol/*.svg'
     ],
     build: './build/images/',
     watch: [
       './source/images/**/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/svg/*.svg'
+      '!./source/images/svg/stack/*.svg',
+      '!./source/images/svg/symbol/*.svg'
     ]
   },
   imageswebp: {
@@ -88,11 +86,16 @@ var paths = {
     build: './build/images/favicons/',
     watch: './source/images/favicons/*.{gif,jpg,jpeg,png}'
   },
-  sprites: {
-    source: './source/images/svg/*.svg',
+  svgSpriteStack: {
+    source: './source/images/svg/stack/*.svg',
     build: './build/images/sprites/',
-    watch: './source/images/svg/*.svg'
-  },  
+    watch: './source/images/svg/stack/*.svg'
+  },
+  svgSpriteSymbol: {
+    source: './source/images/svg/symbol/*.svg',
+    build: './build/images/sprites/',
+    watch: './source/images/svg/symbol/*.svg'
+  },
   fonts: {
     source: './source/fonts/**/*.{woff,woff2}',
     build: './build/fonts/',
@@ -304,71 +307,59 @@ function favicons() {
     .pipe(gulp.dest(paths.favicons.build))
 }
 
-function sprites() {
-  return gulp.src(paths.sprites.source)
+function svgSpriteStack() {
+  return gulp.src(paths.svgSpriteStack.source)
+    .pipe(svgSprite({
+      dest: './',
+      mode: {
+        stack: {
+          bust: false,
+          dest: './',
+          prefix: '.',
+          render: {
+            scss: {
+              dest: './../../../source/styles/helpers/mixins-sprite.scss',
+              template: './source/styles/helpers/mixins-sprite.handlebars'
+            }
+          },
+          sprite: 'sprite.stack.svg'
+        }
+      },
+      svg: {
+        xmlDeclaration: ''
+      }
+    }))
+    .pipe(replace('@mixin .', '@mixin '))
+    .pipe(replace('#.', '#'))
+    .pipe(replace('-dims', ''))
+    .pipe(debug({
+      title: 'SVG Sprite Stack:'
+    }))
+    .pipe(gulp.dest(paths.svgSpriteStack.build))
+}
+
+function svgSpriteSymbol() {
+  return gulp.src(paths.svgSpriteSymbol.source)
     .pipe(rename({
       prefix: 'icon_'
     }))
-    .pipe(imagemin([
-      imagemin.svgo({
-        plugins: [
-          {cleanupAttrs: true},
-          {cleanupListOfValues: true},
-          {cleanupNumericValues: {
-            floatPrecision: 0
-            }
-          },
-          {collapseGroups: true},
-          {convertColors: true},
-          {convertEllipseToCircle: true},
-          {convertShapeToPath: true},
-          {mergePaths: true},
-          {minifyStyles: true},
-          {moveElemsAttrsToGroup: true},
-          {removeAttrs: {
-            attrs: [
-              'clip.*',
-              'fill.*',
-              'stroke.*'
-            ]},
-            preserveCurrentColor: true
-          },
-          {removeComments: true},
-          {removeDesc: true},
-          {removeDimensions: true},
-          {removeDoctype: true},
-          {removeEditorsNSData: true},
-          {removeEmptyAttrs: true},
-          {removeEmptyContainers: true},
-          {removeEmptyText: true},
-          {removeHiddenElems: true},
-          {removeMetadata: true},
-          {removeOffCanvasPaths: true},
-          {removeScriptElement: true},
-          {removeStyleElement: true},
-          {removeTitle: true},
-          {removeUnknownsAndDefaults: true},
-          {removeUnusedNS: true},
-          {removeUselessStrokeAndFill: true},
-          {removeXMLProcInst: true},
-          {sortAttrs: true}
-        ]
-      })
-    ]))
-    .pipe(svgstore({
-      inlineSvg: true
-    }))
-    .pipe(cheerio({
-      run: function ($) {
-        $('symbol').attr('fill', 'currentColor');
+    .pipe(svgSprite({
+      dest: './',
+      mode: {
+        symbol: {
+          dest: './',
+          inline: true,
+          sprite: 'sprite.symbol.svg'
+        }
       },
-      parserOptions: {xmlMode: true}
+      svg: {
+        dimensionAttributes: false
+      }
     }))
-    .pipe(rename('sprite.svg'))
     .pipe(debug({
-      title: 'Sprites:'
+      title: 'SVG Sprite Symbol:'
     }))
-    .pipe(gulp.dest(paths.sprites.build))
+    .pipe(gulp.dest(paths.svgSpriteSymbol.build))
 }
 
 function fonts() {
@@ -399,9 +390,10 @@ function watch() {
   gulp.watch(paths.scripts.watch, scripts);
   gulp.watch(paths.images.watch, images);
   gulp.watch(paths.imageswebp.watch, imageswebp);
-  gulp.watch(paths.sprites.watch, sprites);
   gulp.watch(paths.favicons.watch, favicons);
+  gulp.watch(paths.svgSpriteStack.watch, svgSpriteStack);
+  gulp.watch(paths.svgSpriteSymbol.watch, svgSpriteSymbol);
   gulp.watch(paths.fonts.watch, fonts);
 }
 
-gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, favicons, sprites, fonts, watch));
+gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, favicons, svgSpriteStack, svgSpriteSymbol, fonts, watch));

@@ -1,0 +1,6 @@
+{{#shapes}}
+@mixin {{#selector.dimensions}}{{expression}}{{/selector.dimensions}} {
+  background: url("./../images/sprites/sprite.stack.svg#{{#selector.dimensions}}{{expression}}{{/selector.dimensions}}") center / {{width.outer}}px {{height.outer}}px no-repeat;
+}
+
+{{/shapes}}

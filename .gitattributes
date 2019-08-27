@@ -15,6 +15,7 @@
 LICENSE  text
 
 #Configs
+*.handlebars       text
 .gitattributes     text
 .gitignore         text
 package-lock.json  text -diff
