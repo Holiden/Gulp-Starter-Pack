@@ -230,7 +230,9 @@ function images() {
           {collapseGroups: true},
           {convertColors: true},
           {convertEllipseToCircle: true},
+          {convertPathData: true},
           {convertShapeToPath: true},
+          {convertTransform: true},
           {mergePaths: true},
           {minifyStyles: true},
           {moveElemsAttrsToGroup: true},
@@ -244,6 +246,7 @@ function images() {
           {removeEmptyText: true},
           {removeHiddenElems: true},
           {removeMetadata: true},
+          {removeNonInheritableGroupAttrs: true},
           {removeOffCanvasPaths: true},
           {removeScriptElement: true},
           {removeStyleElement: true},
@@ -309,6 +312,48 @@ function favicons() {
 
 function svgSpriteStack() {
   return gulp.src(paths.svgSpriteStack.source)
+    .pipe(imagemin([
+      imagemin.svgo({
+        plugins: [
+          {cleanupAttrs: true},
+          {cleanupListOfValues: true},
+          {cleanupNumericValues: {
+            floatPrecision: 0
+            }
+          },
+          {collapseGroups: true},
+          {convertColors: true},
+          {convertEllipseToCircle: true},
+          {convertPathData: true},
+          {convertShapeToPath: true},
+          {convertTransform: true},
+          {mergePaths: true},
+          {minifyStyles: true},
+          {moveElemsAttrsToGroup: true},
+          {removeComments: true},
+          {removeDesc: true},
+          {removeDimensions: true},
+          {removeDoctype: true},
+          {removeEditorsNSData: true},
+          {removeEmptyAttrs: true},
+          {removeEmptyContainers: true},
+          {removeEmptyText: true},
+          {removeHiddenElems: true},
+          {removeMetadata: true},
+          {removeNonInheritableGroupAttrs: true},
+          {removeOffCanvasPaths: true},
+          {removeScriptElement: true},
+          {removeStyleElement: true},
+          {removeTitle: true},
+          {removeUnknownsAndDefaults: true},
+          {removeUnusedNS: true},
+          {removeUselessStrokeAndFill: true},
+          {removeXMLNS: true},
+          {removeXMLProcInst: true},
+          {sortAttrs: true}
+        ]
+      })
+    ]))
     .pipe(svgSprite({
       dest: './',
       mode: {
@@ -340,6 +385,54 @@ function svgSpriteStack() {
 
 function svgSpriteSymbol() {
   return gulp.src(paths.svgSpriteSymbol.source)
+    .pipe(imagemin([
+      imagemin.svgo({
+        plugins: [
+          {cleanupAttrs: true},
+          {cleanupListOfValues: true},
+          {cleanupNumericValues: {
+            floatPrecision: 0
+            }
+          },
+          {collapseGroups: true},
+          {convertColors: true},
+          {convertEllipseToCircle: true},
+          {convertPathData: true},
+          {convertShapeToPath: true},
+          {convertTransform: true},
+          {mergePaths: true},
+          {minifyStyles: true},
+          {moveElemsAttrsToGroup: true},
+          {removeAttrs: {
+            attrs: [
+              'clip.*',
+              'fill.*',
+              'stroke.*'
+            ]}
+          },
+          {removeComments: true},
+          {removeDesc: true},
+          {removeDimensions: true},
+          {removeDoctype: true},
+          {removeEditorsNSData: true},
+          {removeEmptyAttrs: true},
+          {removeEmptyContainers: true},
+          {removeEmptyText: true},
+          {removeHiddenElems: true},
+          {removeMetadata: true},
+          {removeNonInheritableGroupAttrs: true},
+          {removeOffCanvasPaths: true},
+          {removeScriptElement: true},
+          {removeStyleElement: true},
+          {removeTitle: true},
+          {removeUnknownsAndDefaults: true},
+          {removeUnusedNS: true},
+          {removeUselessStrokeAndFill: true},
+          {removeXMLProcInst: true},
+          {sortAttrs: true}
+        ]
+      })
+    ]))
     .pipe(rename({
       prefix: 'icon_'
     }))
