@@ -29,6 +29,9 @@ var debug = require('gulp-debug');
 var newer = require('gulp-newer');
 var fileinclude = require('gulp-file-include');
 var svgSprite = require('gulp-svg-sprite');
+var spritesmith = require('gulp.spritesmith');
+var merge = require('merge-stream');
+var buffer = require('vinyl-buffer')
 
 var paths = {
   views: {
@@ -59,6 +62,7 @@ var paths = {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/png/*.png',
       '!./source/images/svg/stack/*.svg',
       '!./source/images/svg/symbol/*.svg'
     ],
@@ -66,6 +70,7 @@ var paths = {
     watch: [
       './source/images/**/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/png/*.png',
       '!./source/images/svg/stack/*.svg',
       '!./source/images/svg/symbol/*.svg'
     ]
@@ -73,18 +78,25 @@ var paths = {
   imageswebp: {
     source: [
       './source/images/**/*.{gif,jpg,jpeg,png}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/png/*.png'
     ],
     build: './build/images/',
     watch: [
       './source/images/**/*.{gif,jpg,jpeg,png}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!./source/images/png/*.png'
     ]
   },
   favicons: {
     source: './source/images/favicons/*.{gif,jpg,jpeg,png}',
     build: './build/images/favicons/',
     watch: './source/images/favicons/*.{gif,jpg,jpeg,png}'
+  },
+  pngSprite: {
+    source: './source/images/png/*.png',
+    build: './build/images/sprites/',
+    watch: './source/images/png/*.png'
   },
   svgSpriteStack: {
     source: './source/images/svg/stack/*.svg',
@@ -310,6 +322,30 @@ function favicons() {
     .pipe(gulp.dest(paths.favicons.build))
 }
 
+function pngSprite() {
+  var spriteData = gulp.src(paths.pngSprite.source)
+    .pipe(spritesmith({
+      algorithm: 'top-down',
+      cssName: 'spritePng.scss',
+      cssTemplate: './source/styles/helpers/spritePng.handlebars',
+      imgName: 'sprite.png'
+    }))
+  var imgStream = spriteData.img
+    .pipe(buffer())
+    .pipe(imagemin([
+      imageminpngquant({
+        dithering: 0.4,
+        speed: 1,
+        strip: true,
+        quality: [0, 1]
+      })
+    ]))
+    .pipe(gulp.dest(paths.pngSprite.build))
+  var cssStream = spriteData.css
+    .pipe(gulp.dest('./source/styles/helpers/'))
+  return merge(imgStream, cssStream)
+}
+
 function svgSpriteStack() {
   return gulp.src(paths.svgSpriteStack.source)
     .pipe(imagemin([
@@ -363,8 +399,8 @@ function svgSpriteStack() {
           prefix: '.',
           render: {
             scss: {
-              dest: './../../../source/styles/helpers/mixins-sprite.scss',
-              template: './source/styles/helpers/mixins-sprite.handlebars'
+              dest: './../../../source/styles/helpers/spriteSvg.scss',
+              template: './source/styles/helpers/spriteSvg.handlebars'
             }
           },
           sprite: 'sprite.stack.svg'
@@ -484,9 +520,10 @@ function watch() {
   gulp.watch(paths.images.watch, images);
   gulp.watch(paths.imageswebp.watch, imageswebp);
   gulp.watch(paths.favicons.watch, favicons);
+  gulp.watch(paths.pngSprite.watch, pngSprite);
   gulp.watch(paths.svgSpriteStack.watch, svgSpriteStack);
   gulp.watch(paths.svgSpriteSymbol.watch, svgSpriteSymbol);
   gulp.watch(paths.fonts.watch, fonts);
 }
 
-gulp.task('default', gulp.series(clean, views, styles, scripts, images, imageswebp, favicons, svgSpriteStack, svgSpriteSymbol, fonts, watch));
+gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, views, styles, scripts, images, imageswebp, favicons, fonts, watch));
