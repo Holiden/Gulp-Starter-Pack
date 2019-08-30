@@ -1,9 +1,10 @@
 {
   "name": "template",
-  "version": "1.7.0",
-  "description": "My template for web development",
+  "version": "1.7.1",
+  "description": "Template for web development",
   "keywords": [
     "build",
+    "frontend",
     "gulp",
     "template",
     "web"
