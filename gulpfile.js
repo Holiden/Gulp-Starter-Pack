@@ -31,7 +31,8 @@ var fileInclude = require('gulp-file-include');
 var svgSprite = require('gulp-svg-sprite');
 var spriteSmith = require('gulp.spritesmith');
 var merge = require('merge-stream');
-var buffer = require('vinyl-buffer')
+var buffer = require('vinyl-buffer');
+var critical = require('critical').stream;
 
 var paths = {
   views: {
@@ -130,6 +131,27 @@ function views() {
       minifyJS: true,
       removeComments: true
     })))
+    .pipe(gulpIf(argv.build, critical({
+      inline: true,
+      base: 'paths.views.build',
+      css: [
+        './build/styles/main.css'
+      ],
+      dimensions: [{
+        width: 320,
+        height: 568
+        },
+        {
+        width: 768,
+        height: 1024
+        },
+        {
+        width: 1920,
+        height: 1280
+        }
+      ],
+      minify: true
+    })))
     .pipe(debug({
       title: 'HTML:'
     }))
@@ -153,7 +175,7 @@ function styles() {
     .pipe(gcmq())
     .pipe(purgeCSS({
       content: [
-        './build/**.html'
+        './source/**/*.html'
       ],
       keyframes: true,
       whitelistPatterns: [/js/]
@@ -511,4 +533,4 @@ function watch() {
   gulp.watch(paths.fonts.watch, fonts)
 }
 
-gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, views, styles, scripts, images, imagesWebp, favicons, fonts, watch))
+gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, styles, views,scripts, images, imagesWebp, favicons, fonts, watch))
