@@ -1,0 +1,55 @@
+body {
+  font-size: $font-size;
+  line-height: $line-height;
+  font-family: $font-family;
+  color: $color-text;
+}
+
+.visually-hidden {
+  position: absolute;
+
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+
+  white-space: nowrap;
+
+  border: 0;
+
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(100%);
+}
+
+.container {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 0 10px;
+
+  @media screen and (min-width: 480px) {
+    max-width: 450px;
+    padding: 0 15px;
+  }
+
+  @media screen and (min-width: 768px) {
+    max-width: 720px;
+    padding: 0 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    max-width: 960px;
+    padding: 0 30px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    max-width: 1200px;
+    padding: 0 40px;
+  }
+}
+
+.heading {
+  font-size: $font-size-heading;
+  font-family: $font-family-heading;
+  color: $color-heading;
+}

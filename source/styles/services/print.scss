@@ -1,0 +1,65 @@
+@media print {
+  *,
+  *::before,
+  *::after {
+    color: #000000 !important;
+    text-shadow: none !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline !important;
+  }
+
+  a[href]::after {
+    content: "("attr(href)")";
+  }
+
+  abbr[title]::after {
+    content: "("attr(title)")";
+  }
+
+  pre,
+  blockquote {
+    border: 1px solid #999999 !important;
+    page-break-inside: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+
+    page-break-inside: avoid;
+  }
+
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    orphans: 3;
+    page-break-after: avoid;
+    widows: 3;
+  }
+
+  table {
+    border-collapse: collapse !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  td,
+  th {
+    background-color: #ffffff !important;
+  }
+}

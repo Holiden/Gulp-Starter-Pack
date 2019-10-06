@@ -1,9 +1,11 @@
+@import "./services/optimizer";
+@import "./services/print";
 @import "./library/library";
 @import "./helpers/functions";
+@import "./helpers/variables";
 @import "./helpers/mixins";
 @import "./helpers/spritePng";
 @import "./helpers/spriteSvg";
-@import "./helpers/variables";
 @import "./services/fonts";
-@import "./services/general";
+@import "./services/common";
 @import "./../blocks/blocks";

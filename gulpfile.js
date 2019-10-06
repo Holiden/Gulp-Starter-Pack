@@ -135,7 +135,7 @@ function views() {
       inline: true,
       base: 'paths.views.build',
       css: [
-        './build/styles/main.css'
+        './build/styles/main.min.css'
       ],
       dimensions: [{
         width: 320,

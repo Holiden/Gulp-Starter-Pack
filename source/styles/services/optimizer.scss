@@ -1,0 +1,171 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  font-size: 100%;
+  line-height: 1;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  word-break: break-word;
+}
+
+code,
+pre {
+  font-family: "Menlo", "Consolas", "Roboto Mono", "Ubuntu Monospace", "Noto Mono", "Oxygen Mono", "Liberation Mono", monospace, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+main {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+abbr[title] {
+  text-decoration: underline;
+}
+
+strong {
+  font-weight: bolder;
+}
+
+small {
+  font-size: 80%;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+svg {
+  fill: currentColor;
+}
+
+hr {
+  overflow: visible;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+ol,
+ul {
+  padding: 0;
+
+  list-style: none;
+}
+
+input {
+  overflow: visible;
+  margin: 0;
+
+  font: inherit;
+  letter-spacing: inherit;
+
+  border: 1px solid WindowFrame;
+  border-radius: 0;
+}
+
+input[type="reset"],
+input[type="submit"],
+input[type="color"] {
+  padding: 0;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  cursor: pointer;
+}
+
+::-webkit-file-upload-button {
+  font: inherit;
+}
+
+input[disabled],
+input[readonly] {
+  cursor: not-allowed;
+}
+
+button {
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+
+  font: inherit;
+  letter-spacing: inherit;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+}
+
+select {
+  margin: 0;
+
+  font: inherit;
+  letter-spacing: inherit;
+
+  background-color: transparent;
+  border: 1px solid WindowFrame;
+  border-radius: 0;
+
+  -webkit-appearance: none;
+     -moz-appearance: none;
+}
+
+::-ms-expand {
+  display: none;
+}
+
+fieldset {
+  border: 1px solid #a0a0a0;
+}
+
+textarea {
+  overflow: auto;
+  margin: 0;
+
+  font: inherit;
+  letter-spacing: inherit;
+
+  background-color: transparent;
+  border: 1px solid WindowFrame;
+  border-radius: 0;
+
+  resize: none;
+}
+
+details {
+  display: block;
+}
+
+summary {
+  display: list-item;
+}
