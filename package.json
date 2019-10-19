@@ -1,7 +1,7 @@
 {
   "name": "template",
-  "version": "1.9.0",
-  "description": "Template for web development",
+  "version": "1.9.1",
+  "description": "Стартовый шаблон для вёрстки",
   "keywords": [
     "build",
     "frontend",

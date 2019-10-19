@@ -45,4 +45,5 @@
 
 ## Контакты
 [telegram](https://t.me/holiden)  
-[vk](https://vk.com/holiden)
+[vk](https://vk.com/holiden)  
+[email](holideny@gmail.com)

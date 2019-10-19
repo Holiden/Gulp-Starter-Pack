@@ -1,0 +1,41 @@
+.check {
+  padding: 0 0 0 1.2em;
+
+  &__input {
+    position: absolute;
+
+    overflow: hidden;
+    height: 0.7em;
+    width: 0.7em;
+    margin: 0.2em 0 0 -1em;
+
+    clip: rect(0, 0, 0, 0);
+
+    &:checked + .check__box {
+      background: #4a90e2 url("./../images/checkbox/assets/check.svg");
+    }
+
+    &:focus + .check__box {
+      box-shadow: 0 0 0 0.1em #4a90e2, 0 0 0 0.2em #7ed321;
+    }
+
+    &:disabled + .check__box {
+      box-shadow: 0 0 0 0.1em #9b9b9b;
+    }
+
+    &:disabled:checked + .check__box {
+      background-color: #9b9b9b;
+    }
+  }
+
+  &__box {
+    position: absolute;
+
+    height: 0.7em;
+    width: 0.7em;
+    margin: 0.2em 0 0 -1em;
+
+    border-radius: 0.05em;
+    box-shadow: 0 0 0 0.1em #4a90e2;
+  }
+}

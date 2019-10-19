@@ -5,11 +5,13 @@
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
 
   font-size: 100%;
-  line-height: 1;
+  line-height: 1.5;
   font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu", "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  text-rendering: optimizeSpeed;
   word-break: break-word;
 }
 
@@ -23,6 +25,7 @@ main {
 }
 
 a {
+  color: inherit;
   text-decoration: none;
 }
 
@@ -43,6 +46,10 @@ abbr[title] {
   text-decoration: underline;
 }
 
+blockquote {
+  margin: 0;
+}
+
 strong {
   font-weight: bolder;
 }
@@ -60,6 +67,10 @@ svg {
   fill: currentColor;
 }
 
+figure {
+  margin: 0;
+}
+
 hr {
   overflow: visible;
 }
@@ -68,11 +79,21 @@ table {
   border-collapse: collapse;
 }
 
-ol,
-ul {
+td {
+  padding: 0;
+}
+
+ol[class],
+ul[class] {
+  margin: 0;
   padding: 0;
 
   list-style: none;
+}
+
+dl[class],
+dd[class] {
+  margin: 0;
 }
 
 input {

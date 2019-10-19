@@ -39,28 +39,31 @@ var paths = {
     source: './source/views/**/*.html',
     build: './build/',
     watch: [
+      './source/blocks/**/*.html',
       './source/components/**/*.html',
       './source/views/**/*.html'
     ]
   },
   styles: {
-    source: './source/styles/main.{css,sass,scss}',
+    source: './source/styles/main.{css,less,sass,scss}',
     build: './build/styles/',
     watch: [
-      './source/components/**/*.{css,sass,scss}',
-      './source/styles/**/*.{css,sass,scss}'
+      './source/blocks/**/*.{css,less,sass,scss}',
+      './source/components/**/*.{css,less,sass,scss}',
+      './source/styles/**/*.{css,less,sass,scss}'
     ]
   },
   scripts: {
     source: './source/scripts/**/*.js',
     build: './build/scripts/',
     watch: [
-      './source/components/**/*.js',
+      './source/blocks/**/*.js',
       './source/scripts/**/*.js'
     ]
   },
   images: {
     source: [
+      './source/components/**/*.{gif,jpg,jpeg,png,svg}',
       './source/images/content/*.{gif,jpg,jpeg,png,svg}',
       './source/images/background/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
@@ -70,6 +73,7 @@ var paths = {
     ],
     build: './build/images/',
     watch: [
+      './source/components/**/*.{gif, jpg, jpeg, png, svg}',
       './source/images/content/*.{gif,jpg,jpeg,png,svg}',
       './source/images/background/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
@@ -132,7 +136,6 @@ function views() {
       removeComments: true
     })))
     .pipe(gulpIf(argv.build, critical({
-      inline: true,
       base: 'paths.views.build',
       css: [
         './build/styles/main.min.css'
@@ -146,10 +149,11 @@ function views() {
         height: 1024
         },
         {
-        width: 1920,
+        width: 1440,
         height: 1280
         }
       ],
+      inline: true,
       minify: true
     })))
     .pipe(debug({
