@@ -1,38 +1,43 @@
 var gulp = require('gulp');
+var del = require('del');
+var rename = require('gulp-rename');
+var replace = require('gulp-replace');
+var gulpIf = require('gulp-if');
+var argv = require('yargs').argv;
+var browserSync = require('browser-sync').create();
+var plumber = require('gulp-plumber');
+var notify = require('gulp-notify');
+var debug = require('gulp-debug');
+var newer = require('gulp-newer');
+var merge = require('merge-stream');
+var buffer = require('vinyl-buffer');
+
+var fileInclude = require('gulp-file-include');
+var critical = require('critical').stream;
+var htmlMin = require('gulp-htmlmin');
+
 var sass = require('gulp-sass');
 var postCSS = require('gulp-postcss');
 var autoPrefixer = require('autoprefixer');
-var sourceMaps = require('gulp-sourcemaps');
-var del = require('del');
-var cleanCSS = require('gulp-clean-css');
-var uglify = require('gulp-uglify');
-var gulpIf = require('gulp-if');
-var browserSync = require('browser-sync').create();
-var rename = require("gulp-rename");
-var replace = require('gulp-replace');
-var plumber = require('gulp-plumber');
-var argv = require('yargs').argv;
-var htmlMin = require('gulp-htmlmin');
-var concat = require('gulp-concat');
-var purgeCSS = require('gulp-purgecss');
+var pxToRem = require('postcss-pxtorem');
+var focus = require('postcss-focus');
 var gcmq = require('gulp-group-css-media-queries');
+var sourceMaps = require('gulp-sourcemaps');
+var purgeCSS = require('gulp-purgecss');
+var cleanCSS = require('gulp-clean-css');
+
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var include = require('gulp-include');
+
 var imageMin = require('gulp-imagemin');
-var imageMinPngQuant = require('imagemin-pngquant');
 var imageMinMozJpeg = require('imagemin-mozjpeg');
+var imageMinPngQuant = require('imagemin-pngquant');
 var imageMinWebp = require('imagemin-webp');
 var webp = require('gulp-webp');
 var favicon = require('gulp-favicons');
-var pxToRem = require('postcss-pxtorem');
-var focus = require('postcss-focus');
-var notify = require("gulp-notify");
-var debug = require('gulp-debug');
-var newer = require('gulp-newer');
-var fileInclude = require('gulp-file-include');
-var svgSprite = require('gulp-svg-sprite');
 var spriteSmith = require('gulp.spritesmith');
-var merge = require('merge-stream');
-var buffer = require('vinyl-buffer');
-var critical = require('critical').stream;
+var svgSprite = require('gulp-svg-sprite');
 
 var paths = {
   views: {
@@ -45,12 +50,12 @@ var paths = {
     ]
   },
   styles: {
-    source: './source/styles/main.{css,less,sass,scss}',
+    source: './source/styles/main.{css,sass,scss}',
     build: './build/styles/',
     watch: [
-      './source/blocks/**/*.{css,less,sass,scss}',
-      './source/components/**/*.{css,less,sass,scss}',
-      './source/styles/**/*.{css,less,sass,scss}'
+      './source/blocks/**/*.{css,sass,scss}',
+      './source/components/**/*.{css,sass,scss}',
+      './source/styles/**/*.{css,sass,scss}'
     ]
   },
   scripts: {
@@ -58,6 +63,7 @@ var paths = {
     build: './build/scripts/',
     watch: [
       './source/blocks/**/*.js',
+      './source/components/**/*.js',
       './source/scripts/**/*.js'
     ]
   },
@@ -129,12 +135,6 @@ function views() {
     }))
     .pipe(gulpIf(argv.build, replace('.css', '.min.css')))
     .pipe(gulpIf(argv.build, replace('.js', '.min.js')))
-    .pipe(gulpIf(argv.build, htmlMin({
-      collapseWhitespace: true,
-      minifyCSS: true,
-      minifyJS: true,
-      removeComments: true
-    })))
     .pipe(gulpIf(argv.build, critical({
       base: 'paths.views.build',
       css: [
@@ -155,6 +155,12 @@ function views() {
       ],
       inline: true,
       minify: true
+    })))
+    .pipe(gulpIf(argv.build, htmlMin({
+      collapseWhitespace: true,
+      minifyCSS: true,
+      minifyJS: true,
+      removeComments: true
     })))
     .pipe(debug({
       title: 'HTML:'
@@ -177,13 +183,6 @@ function styles() {
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
     .pipe(sass())
     .pipe(gcmq())
-    .pipe(purgeCSS({
-      content: [
-        './source/**/*.html'
-      ],
-      keyframes: true,
-      whitelistPatterns: [/js/]
-    }))
     .pipe(postCSS([
       autoPrefixer({
         grid: 'no-autoplace'
@@ -221,6 +220,7 @@ function scripts() {
       this.emit('end');
       }
     }))
+    .pipe(include())
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
     .pipe(concat('main.js'))
     .pipe(gulpIf(argv.build, uglify()))
@@ -518,6 +518,7 @@ function clean() {
 function watch() {
   if(argv.sync){
     browserSync.init({
+      host: 'localhost',
       notify: false,
       port: 7000,
       server: './build/',

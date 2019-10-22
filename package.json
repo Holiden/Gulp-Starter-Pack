@@ -1,6 +1,6 @@
 {
   "name": "template",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "Стартовый шаблон для вёрстки",
   "keywords": [
     "build",
@@ -37,11 +37,11 @@
     "gulp-htmlmin": "^5.0.1",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^6.1.0",
+    "gulp-include": "^2.4.1",
     "gulp-newer": "^1.4.0",
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
-    "gulp-purgecss": "^1.2.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
     "gulp-sass": "^4.0.2",
