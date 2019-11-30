@@ -1,16 +1,16 @@
-#Filename extension
+# Filename extension
 *.pdf
 *.psd
 
-#File
+# File
 Desktop.ini
 Thumbs.db
 ehthumbs.db
 
-#Folder
+# Folder
 build
 design
 node_modules
 
-#Configs
+# Configs
 package-lock.json

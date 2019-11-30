@@ -1,7 +1,7 @@
-#Auto-detect
+# Auto-detect
 * text=auto
 
-#Source code
+# Source code
 *.css   text
 *.html  text
 *.js    text
@@ -11,19 +11,19 @@
 *.sass  text
 *.scss  text
 
-#Documentation
+# Documentation
 *.md     text
 *.txt    text
 LICENSE  text
 
-#Configs
+# Configs
 *.handlebars       text
 .editorconfig      text
 .gitattributes     text
 .gitignore         text
 package-lock.json  text -diff
 
-#Graphics
+# Graphics
 *.ico   binary
 *.gif   binary
 *.jpg   binary
@@ -32,6 +32,6 @@ package-lock.json  text -diff
 *.svg   text
 *.webp  binary
 
-#Fonts
+# Fonts
 *.woff   binary
 *.woff2  binary

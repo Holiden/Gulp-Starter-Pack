@@ -1,0 +1,27 @@
+.button {
+  position: relative;
+
+  display: inline-block;
+
+  color: $color-accent;
+  text-align: center;
+
+  border: 0.1em solid $color-accent;
+  border-radius: 2em;
+  box-shadow: 0 0.22em $color-shadow;
+
+  transition: color 0.3s linear, background-color 0.3s linear;
+
+  &:hover {
+    color: $color-light;
+
+    background-color: $color-hover;
+    box-shadow: 0 0.22em $color-shadow;
+  }
+
+  &:active {
+    top: 0.17em;
+
+    box-shadow: 0 0.06em $color-shadow;
+  }
+}

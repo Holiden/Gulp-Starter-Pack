@@ -12,27 +12,28 @@ var newer = require('gulp-newer');
 var merge = require('merge-stream');
 var buffer = require('vinyl-buffer');
 
+var pug = require('gulp-pug');
 var fileInclude = require('gulp-file-include');
 var critical = require('critical').stream;
 var htmlMin = require('gulp-htmlmin');
 
+var less = require('gulp-less');
 var sass = require('gulp-sass');
 var postCSS = require('gulp-postcss');
 var autoPrefixer = require('autoprefixer');
 var pxToRem = require('postcss-pxtorem');
 var focus = require('postcss-focus');
-var gcmq = require('gulp-group-css-media-queries');
+var gmq = require('gulp-group-css-media-queries');
 var sourceMaps = require('gulp-sourcemaps');
-var purgeCSS = require('gulp-purgecss');
-var cleanCSS = require('gulp-clean-css');
+var cssMin = require('gulp-clean-css');
 
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var include = require('gulp-include');
 
 var imageMin = require('gulp-imagemin');
-var imageMinMozJpeg = require('imagemin-mozjpeg');
-var imageMinPngQuant = require('imagemin-pngquant');
+var imageMinJpeg = require('imagemin-mozjpeg');
+var imageMinPng = require('imagemin-pngquant');
 var imageMinWebp = require('imagemin-webp');
 var webp = require('gulp-webp');
 var favicon = require('gulp-favicons');
@@ -41,21 +42,21 @@ var svgSprite = require('gulp-svg-sprite');
 
 var paths = {
   views: {
-    source: './source/views/**/*.html',
+    source: './source/views/**/*.{html,pug}',
     build: './build/',
     watch: [
-      './source/blocks/**/*.html',
-      './source/components/**/*.html',
-      './source/views/**/*.html'
+      './source/blocks/**/*.{html,pug}',
+      './source/components/**/*.{html,pug}',
+      './source/views/**/*.{html,pug}'
     ]
   },
   styles: {
-    source: './source/styles/main.{css,sass,scss}',
+    source: './source/styles/main.{css,less,sass,scss}',
     build: './build/styles/',
     watch: [
-      './source/blocks/**/*.{css,sass,scss}',
-      './source/components/**/*.{css,sass,scss}',
-      './source/styles/**/*.{css,sass,scss}'
+      './source/blocks/**/*.{css,less,sass,scss}',
+      './source/components/**/*.{css,less,sass,scss}',
+      './source/styles/**/*.{css,less,sass,scss}'
     ]
   },
   scripts: {
@@ -133,6 +134,9 @@ function views() {
     .pipe(fileInclude({
       prefix: '@'
     }))
+    .pipe(pug({
+      pretty: true
+    }))
     .pipe(gulpIf(argv.build, replace('.css', '.min.css')))
     .pipe(gulpIf(argv.build, replace('.js', '.min.js')))
     .pipe(gulpIf(argv.build, critical({
@@ -181,8 +185,9 @@ function styles() {
       }
     }))
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
+    .pipe(less())
     .pipe(sass())
-    .pipe(gcmq())
+    .pipe(gmq())
     .pipe(postCSS([
       autoPrefixer({
         grid: 'no-autoplace'
@@ -190,7 +195,7 @@ function styles() {
       pxToRem(),
       focus()
     ]))
-    .pipe(gulpIf(argv.build, cleanCSS({
+    .pipe(gulpIf(argv.build, cssMin({
       level: 2
       })
     ))
@@ -243,7 +248,7 @@ function images() {
   return gulp.src(paths.images.source)
     .pipe(newer(paths.images.build))
     .pipe(gulpIf(argv.build, imageMin([
-      imageMinMozJpeg({
+      imageMinJpeg({
         smooth: 10,
         quality: 70
       }),
@@ -285,7 +290,7 @@ function images() {
           {sortAttrs: true}
         ]
       }),
-      imageMinPngQuant({
+      imageMinPng({
         dithering: 0.4,
         speed: 1,
         strip: true,
@@ -348,7 +353,7 @@ function pngSprite() {
   var imgStream = spriteData.img
     .pipe(buffer())
     .pipe(imageMin([
-      imageMinPngQuant({
+      imageMinPng({
         dithering: 0.4,
         padding: 30,
         speed: 1,
@@ -538,4 +543,4 @@ function watch() {
   gulp.watch(paths.fonts.watch, fonts)
 }
 
-gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, styles, views,scripts, images, imagesWebp, favicons, fonts, watch))
+gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, styles, views, scripts, images, imagesWebp, favicons, fonts, watch))

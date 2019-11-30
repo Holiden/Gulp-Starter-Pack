@@ -1,0 +1,80 @@
+.menu {
+  align-items: center;
+  display: none;
+  padding: 0.3em;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  &__box {
+    position: relative;
+
+    display: inline-block;
+    height: 1.7em;
+    width: 2.2em;
+    margin-left: 0.5em;
+  }
+
+  &__inner {
+    top: 50%;
+
+    display: block;
+    margin-top: -0.1em;
+
+    &,
+    &::before,
+    &::after {
+      position: absolute;
+
+      height: 0.25em;
+      width: 2.2em;
+
+      background-color: $color-accent;
+      border-radius: 0.3em;
+
+      transition: transform 0.1s linear;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+
+      display: block;
+    }
+
+    &::before {
+      top: -0.55em;
+
+      transition: top 0.1s 0.2s linear;
+    }
+
+    &::after {
+      bottom: -0.55em;
+
+      transition: bottom 0.1s 0.2s linear, transform 0.1s linear;
+    }
+  }
+
+  &--active {
+    .menu__inner {
+      transform: rotate(45deg);
+      transition: transform 0.1s 0.2s linear;
+
+      &::before {
+        top: 0;
+
+        opacity: 0;
+
+        transition: top 0.1s linear, opacity 0.1s 0.2s linear;
+      }
+
+      &::after {
+        bottom: 0;
+
+        transform: rotate(-90deg);
+        transition: bottom 0.1s linear, transform 0.1s 0.2s linear;
+      }
+    }
+  }
+}

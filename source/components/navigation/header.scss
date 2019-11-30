@@ -1,0 +1,50 @@
+.main-header {
+  @include container;
+
+  &__navigation {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+}
+
+.navigation {
+  &__wrapper {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      position: absolute;
+      right: 100%;
+      z-index: 1;
+
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      background-color: $color-lightness;
+
+      transition: right 0.3s 0.1s linear;
+
+      &--active {
+        right: 0;
+
+        display: flex;
+      }
+    }
+  }
+
+  &__list-site {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__list-user {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

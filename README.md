@@ -45,6 +45,6 @@
 * `npm run build` - сборка проекта.
 
 ## Контакты
+<holideny@gmail.com>  
 [telegram](https://t.me/holiden)  
-[vk](https://vk.com/holiden)  
-[email](holideny@gmail.com)
+[vk](https://vk.com/holiden)
