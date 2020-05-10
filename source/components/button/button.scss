@@ -1,27 +1,39 @@
 .button {
   position: relative;
-
-  display: inline-block;
-
-  color: $color-accent;
-  text-align: center;
-
-  border: 0.1em solid $color-accent;
-  border-radius: 2em;
-  box-shadow: 0 0.22em $color-shadow;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   transition: color 0.3s linear, background-color 0.3s linear;
+  cursor: pointer;
 
-  &:hover {
-    color: $color-light;
+  &--close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 20px;
+    width: 20px;
+    padding: 20px;
+    cursor: pointer;
 
-    background-color: $color-hover;
-    box-shadow: 0 0.22em $color-shadow;
-  }
+    &::before,
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 2px;
+      width: 20px;
+      background-color: #000000;
+      content: "";
+    }
 
-  &:active {
-    top: 0.17em;
+    &::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
 
-    box-shadow: 0 0.06em $color-shadow;
+    &::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
   }
 }

@@ -1,2 +1,2 @@
-//=require ./../components/components.js
-//=require ./../blocks/blocks.js
+//=include("./../components/components.js")
+//=include("./../blocks/blocks.js")

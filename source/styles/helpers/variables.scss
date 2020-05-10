@@ -1,18 +1,18 @@
 // Цвета
-$color-text: #000000;
-$color-heading: #000000;
-$color-link: #000000;
-$color-hover: #000000;
-$color-shadow: fade(#ff0004, 19%);
-$color-light: #fbfcfc;
-$color-accent: #ff690f;
-$color-secondary: #325785;
+
+$color-white: #ffffff;
+$color-gray-dark: #a6a6a6;
+$color-blue: #3cbef1;
+$color-black-light: #1b1c1d;
+$color-black: #000000;
 
 // Типографика
+
+$font-family: sans-serif;
 $font-weight: 400;
 $font-size: 16px;
-$font-size-heading: 40px;
-$font-size-subheding: 24px;
-$line-height: 1.5;
-$font-family: "Segoe UI";
-$font-family-heading: "Segoe UI";
+$line-height: 2;
+$font-size-heading: 32px;
+$font-size-subheading: 24px;
+$color-text: $color-black;
+$color-heading: $color-black;

@@ -1,24 +1,20 @@
-body {
+.main-page {
   font-weight: $font-weight;
   font-size: $font-size;
   line-height: $line-height;
   font-family: $font-family;
-  color: $color-text;
+  color: $color-black;
 }
 
 .visually-hidden {
   position: absolute;
-
-  overflow: hidden;
   height: 1px;
   width: 1px;
-  margin: -1px;
-  padding: 0;
-
-  white-space: nowrap;
-
-  border: 0;
-
+  overflow: hidden;
   clip: rect(0, 0, 0, 0);
   clip-path: inset(100%);
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  white-space: nowrap;
 }

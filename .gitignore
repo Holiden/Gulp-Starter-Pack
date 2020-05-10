@@ -1,15 +1,5 @@
-# Filename extension
-*.pdf
-*.psd
-
-# File
-Desktop.ini
-Thumbs.db
-ehthumbs.db
-
 # Folder
 build
-design
 node_modules
 
 # Configs

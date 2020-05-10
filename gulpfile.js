@@ -1,62 +1,54 @@
-var gulp = require('gulp');
-var del = require('del');
-var rename = require('gulp-rename');
-var replace = require('gulp-replace');
-var gulpIf = require('gulp-if');
-var argv = require('yargs').argv;
-var browserSync = require('browser-sync').create();
-var plumber = require('gulp-plumber');
-var notify = require('gulp-notify');
-var debug = require('gulp-debug');
-var newer = require('gulp-newer');
-var merge = require('merge-stream');
-var buffer = require('vinyl-buffer');
+const gulp = require('gulp');
+const del = require('del');
+const rename = require('gulp-rename');
+const replace = require('gulp-replace');
+const fileInclude = require('gulp-file-include');
+const sourceMaps = require('gulp-sourcemaps');
+const gulpIf = require('gulp-if');
+const argv = require('yargs').argv;
+const browserSync = require('browser-sync').create();
+const plumber = require('gulp-plumber');
+const notify = require('gulp-notify');
+const debug = require('gulp-debug');
+const newer = require('gulp-newer');
 
-var pug = require('gulp-pug');
-var fileInclude = require('gulp-file-include');
-var critical = require('critical').stream;
-var htmlMin = require('gulp-htmlmin');
+const htmlMin = require('gulp-htmlmin');
 
-var less = require('gulp-less');
-var sass = require('gulp-sass');
-var postCSS = require('gulp-postcss');
-var autoPrefixer = require('autoprefixer');
-var pxToRem = require('postcss-pxtorem');
-var focus = require('postcss-focus');
-var gmq = require('gulp-group-css-media-queries');
-var sourceMaps = require('gulp-sourcemaps');
-var cssMin = require('gulp-clean-css');
+const sass = require('gulp-sass');
+const gmq = require('gulp-group-css-media-queries');
+const postCSS = require('gulp-postcss');
+const autoPrefixer = require('autoprefixer');
+const cssMin = require('gulp-clean-css');
 
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var include = require('gulp-include');
+const concat = require('gulp-concat');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
 
-var imageMin = require('gulp-imagemin');
-var imageMinJpeg = require('imagemin-mozjpeg');
-var imageMinPng = require('imagemin-pngquant');
-var imageMinWebp = require('imagemin-webp');
-var webp = require('gulp-webp');
-var favicon = require('gulp-favicons');
-var spriteSmith = require('gulp.spritesmith');
-var svgSprite = require('gulp-svg-sprite');
+const imageMin = require('gulp-imagemin');
+const imageMinJpeg = require('imagemin-mozjpeg');
+const imageMinPng = require('imagemin-pngquant');
+const imageMinWebp = require('imagemin-webp');
+const webp = require('gulp-webp');
+const svgSprite = require('gulp-svg-sprite');
+const favicon = require('gulp-favicons');
 
-var paths = {
+const paths = {
   views: {
-    source: './source/views/**/*.{html,pug}',
+    source: './source/views/**/*.html',
     build: './build/',
     watch: [
-      './source/blocks/**/*.{html,pug}',
-      './source/components/**/*.{html,pug}',
-      './source/views/**/*.{html,pug}'
+      './source/blocks/**/*.html',
+      './source/components/**/*.html',
+      './source/views/**/*.html'
     ]
   },
   styles: {
-    source: './source/styles/main.{css,less,sass,scss}',
+    source: './source/styles/main.{css,scss}',
     build: './build/styles/',
     watch: [
-      './source/blocks/**/*.{css,less,sass,scss}',
-      './source/components/**/*.{css,less,sass,scss}',
-      './source/styles/**/*.{css,less,sass,scss}'
+      './source/blocks/**/*.{css,scss}',
+      './source/components/**/*.{css,scss}',
+      './source/styles/**/*.{css,scss}'
     ]
   },
   scripts: {
@@ -70,49 +62,37 @@ var paths = {
   },
   images: {
     source: [
-      './source/components/**/*.{gif,jpg,jpeg,png,svg}',
-      './source/images/content/*.{gif,jpg,jpeg,png,svg}',
-      './source/images/background/*.{gif,jpg,jpeg,png,svg}',
+      './source/images/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/png/*.png',
-      '!./source/images/svg/stack/*.svg',
-      '!./source/images/svg/symbol/*.svg'
+      '!./source/images/svg/*.svg'
     ],
     build: './build/images/',
     watch: [
-      './source/components/**/*.{gif, jpg, jpeg, png, svg}',
-      './source/images/content/*.{gif,jpg,jpeg,png,svg}',
-      './source/images/background/*.{gif,jpg,jpeg,png,svg}',
+      './source/images/*.{gif,jpg,jpeg,png,svg}',
       '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/png/*.png',
-      '!./source/images/svg/stack/*.svg',
-      '!./source/images/svg/symbol/*.svg'
+      '!./source/images/svg/*.svg'
     ]
   },
   imagesWebp: {
-    source: './source/images/content/*.{gif,jpg,jpeg,png}',
+    source: [
+      './source/images/*.{gif,jpg,jpeg,png}',
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+    ],
     build: './build/images/',
-    watch: './source/images/content/*.{gif,jpg,jpeg,png}'
+    watch: [
+      './source/images/*.{gif,jpg,jpeg,png}',
+      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
+    ]
+  },
+  spriteSvg: {
+    source: './source/images/svg/*.svg',
+    build: './build/images/sprites/',
+    watch: './source/images/svg/*.svg'
   },
   favicons: {
     source: './source/images/favicons/*.{gif,jpg,jpeg,png}',
     build: './build/images/favicons/',
     watch: './source/images/favicons/*.{gif,jpg,jpeg,png}'
-  },
-  pngSprite: {
-    source: './source/images/png/*.png',
-    build: './build/images/sprites/',
-    watch: './source/images/png/*.png'
-  },
-  svgSpriteStack: {
-    source: './source/images/svg/stack/*.svg',
-    build: './build/images/sprites/',
-    watch: './source/images/svg/stack/*.svg'
-  },
-  svgSpriteSymbol: {
-    source: './source/images/svg/symbol/*.svg',
-    build: './build/images/sprites/',
-    watch: './source/images/svg/symbol/*.svg'
   },
   fonts: {
     source: './source/fonts/**/*.{woff,woff2}',
@@ -123,43 +103,20 @@ var paths = {
 
 function views() {
   return gulp.src(paths.views.source)
-    .pipe(plumber({errorHandler: notify.onError({
-      message: 'Error: <%= error.message %>',
-      title: 'HTML Error'
+    .pipe(plumber({
+      errorHandler: notify.onError({
+        message: 'Error: <%= error.message %>',
+        title: 'HTML Error'
       }),
       function() {
-      this.emit('end');
+        this.emit('end');
       }
     }))
     .pipe(fileInclude({
-      prefix: '@'
-    }))
-    .pipe(pug({
-      pretty: true
+      prefix: '//='
     }))
     .pipe(gulpIf(argv.build, replace('.css', '.min.css')))
     .pipe(gulpIf(argv.build, replace('.js', '.min.js')))
-    .pipe(gulpIf(argv.build, critical({
-      base: 'paths.views.build',
-      css: [
-        './build/styles/main.min.css'
-      ],
-      dimensions: [{
-        width: 320,
-        height: 568
-        },
-        {
-        width: 768,
-        height: 1024
-        },
-        {
-        width: 1440,
-        height: 1280
-        }
-      ],
-      inline: true,
-      minify: true
-    })))
     .pipe(gulpIf(argv.build, htmlMin({
       collapseWhitespace: true,
       minifyCSS: true,
@@ -175,38 +132,30 @@ function views() {
 
 function styles() {
   return gulp.src(paths.styles.source)
-    .pipe(plumber({errorHandler: notify.onError({
-      message: 'Error: <%= error.message %>',
-      title: 'CSS Error',
-      wait: true
+    .pipe(plumber({
+      errorHandler: notify.onError({
+        message: 'Error: <%= error.message %>',
+        title: 'CSS Error'
       }),
       function() {
-      this.emit('end');
+        this.emit('end');
       }
     }))
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
-    .pipe(less())
     .pipe(sass())
     .pipe(gmq())
     .pipe(postCSS([
-      autoPrefixer({
-        grid: 'no-autoplace'
-      }),
-      pxToRem(),
-      focus()
+      autoPrefixer()
     ]))
     .pipe(gulpIf(argv.build, cssMin({
       level: 2
-      })
-    ))
+    })))
     .pipe(gulpIf(argv.build, rename({
       suffix: '.min'
-      })
-    ))
+    })))
     .pipe(gulpIf(argv.dev, sourceMaps.write('./maps/', {
       addComment: false
-      }
-    )))
+    })))
     .pipe(debug({
       title: 'CSS:'
     }))
@@ -216,29 +165,34 @@ function styles() {
 
 function scripts() {
   return gulp.src(paths.scripts.source)
-    .pipe(plumber({errorHandler: notify.onError({
-      message: 'Error: <%= error.message %>',
-      title: 'JS Error',
-      wait: true
+    .pipe(plumber({
+      errorHandler: notify.onError({
+        message: 'Error: <%= error.message %>',
+        title: 'JS Error'
       }),
       function() {
-      this.emit('end');
+        this.emit('end');
       }
     }))
-    .pipe(include())
+    .pipe(fileInclude({
+      prefix: '//='
+    }))
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
     .pipe(concat('main.js'))
+    .pipe(babel({
+      presets: [
+        '@babel/env'
+      ]
+    }))
     .pipe(gulpIf(argv.build, uglify()))
     .pipe(gulpIf(argv.build, rename({
       suffix: '.min'
-      })
-    ))
+    })))
     .pipe(gulpIf(argv.dev, sourceMaps.write('./maps/', {
       addComment: false
-      }
-    )))
+    })))
     .pipe(debug({
-      title: 'Scripts:'
+      title: 'JS:'
     }))
     .pipe(gulp.dest(paths.scripts.build))
     .on('end', browserSync.reload)
@@ -258,35 +212,9 @@ function images() {
       }),
       imageMin.svgo({
         plugins: [
-          {cleanupAttrs: true},
           {cleanupListOfValues: true},
-          {collapseGroups: true},
-          {convertColors: true},
-          {convertEllipseToCircle: true},
-          {convertPathData: true},
-          {convertShapeToPath: true},
-          {convertTransform: true},
-          {mergePaths: true},
-          {minifyStyles: true},
-          {moveElemsAttrsToGroup: true},
-          {removeComments: true},
-          {removeDesc: true},
-          {removeDimensions: true},
-          {removeDoctype: true},
-          {removeEditorsNSData: true},
-          {removeEmptyAttrs: true},
-          {removeEmptyContainers: true},
-          {removeEmptyText: true},
-          {removeHiddenElems: true},
-          {removeMetadata: true},
-          {removeNonInheritableGroupAttrs: true},
           {removeOffCanvasPaths: true},
           {removeScriptElement: true},
-          {removeTitle: true},
-          {removeUnknownsAndDefaults: true},
-          {removeUnusedNS: true},
-          {removeUselessStrokeAndFill: true},
-          {removeXMLProcInst: true},
           {sortAttrs: true}
         ]
       }),
@@ -317,8 +245,48 @@ function imagesWebp() {
         quality: 70
       })
     ]))))
-    .pipe(debug({title: 'ImagesWebp:'}))
+    .pipe(debug({
+      title: 'ImagesWebp:'
+    }))
     .pipe(gulp.dest(paths.imagesWebp.build))
+}
+
+function spriteSvg() {
+  return gulp.src(paths.spriteSvg.source)
+    .pipe(gulpIf(argv.build,imageMin([
+      imageMin.svgo({
+        plugins: [
+          {cleanupListOfValues: true},
+          {removeOffCanvasPaths: true},
+          {removeScriptElement: true},
+          {sortAttrs: true}
+        ]
+      })
+    ])))
+    .pipe(svgSprite({
+      dest: './',
+      mode: {
+        stack: {
+          dest: './',
+          prefix: '',
+          render: {
+            scss: {
+              dest: './../../../source/styles/helpers/spriteSvg.scss',
+              template: './source/styles/helpers/spriteSvg.handlebars'
+            }
+          },
+          sprite: 'sprite.svg'
+        }
+      },
+      svg: {
+        xmlDeclaration: ''
+      }
+    }))
+    .pipe(replace('-dims', ''))
+    .pipe(debug({
+      title: 'Sprite SVG:'
+    }))
+    .pipe(gulp.dest(paths.spriteSvg.build))
 }
 
 function favicons() {
@@ -342,171 +310,6 @@ function favicons() {
     .pipe(gulp.dest(paths.favicons.build))
 }
 
-function pngSprite() {
-  var spriteData = gulp.src(paths.pngSprite.source)
-    .pipe(spriteSmith({
-      algorithm: 'top-down',
-      cssName: 'spritePng.scss',
-      cssTemplate: './source/styles/helpers/spritePng.handlebars',
-      imgName: 'sprite.png'
-    }))
-  var imgStream = spriteData.img
-    .pipe(buffer())
-    .pipe(imageMin([
-      imageMinPng({
-        dithering: 0.4,
-        padding: 30,
-        speed: 1,
-        strip: true,
-        quality: [0, 1]
-      })
-    ]))
-    .pipe(gulp.dest(paths.pngSprite.build))
-  var cssStream = spriteData.css
-    .pipe(gulp.dest('./source/styles/helpers/'))
-  return merge(imgStream, cssStream)
-}
-
-function svgSpriteStack() {
-  return gulp.src(paths.svgSpriteStack.source)
-    .pipe(imageMin([
-      imageMin.svgo({
-        plugins: [
-          {cleanupAttrs: true},
-          {cleanupListOfValues: true},
-          {collapseGroups: true},
-          {convertColors: true},
-          {convertEllipseToCircle: true},
-          {convertPathData: true},
-          {convertShapeToPath: true},
-          {convertTransform: true},
-          {mergePaths: true},
-          {minifyStyles: true},
-          {moveElemsAttrsToGroup: true},
-          {removeComments: true},
-          {removeDesc: true},
-          {removeDimensions: true},
-          {removeDoctype: true},
-          {removeEditorsNSData: true},
-          {removeEmptyAttrs: true},
-          {removeEmptyContainers: true},
-          {removeEmptyText: true},
-          {removeHiddenElems: true},
-          {removeMetadata: true},
-          {removeNonInheritableGroupAttrs: true},
-          {removeOffCanvasPaths: true},
-          {removeScriptElement: true},
-          {removeTitle: true},
-          {removeUnknownsAndDefaults: true},
-          {removeUnusedNS: true},
-          {removeUselessStrokeAndFill: true},
-          {removeXMLNS: true},
-          {removeXMLProcInst: true},
-          {sortAttrs: true}
-        ]
-      })
-    ]))
-    .pipe(svgSprite({
-      dest: './',
-      mode: {
-        stack: {
-          bust: false,
-          dest: './',
-          prefix: '.',
-          render: {
-            scss: {
-              dest: './../../../source/styles/helpers/spriteSvg.scss',
-              template: './source/styles/helpers/spriteSvg.handlebars'
-            }
-          },
-          sprite: 'sprite.stack.svg'
-        }
-      },
-      svg: {
-        xmlDeclaration: ''
-      }
-    }))
-    .pipe(replace('@mixin .', '@mixin '))
-    .pipe(replace('#.', '#'))
-    .pipe(replace('-dims', ''))
-    .pipe(debug({
-      title: 'SVG Sprite Stack:'
-    }))
-    .pipe(gulp.dest(paths.svgSpriteStack.build))
-}
-
-function svgSpriteSymbol() {
-  return gulp.src(paths.svgSpriteSymbol.source)
-    .pipe(imageMin([
-      imageMin.svgo({
-        plugins: [
-          {cleanupAttrs: true},
-          {cleanupListOfValues: true},
-          {cleanupNumericValues: {
-            floatPrecision: 0
-            }
-          },
-          {collapseGroups: true},
-          {convertColors: true},
-          {convertEllipseToCircle: true},
-          {convertPathData: true},
-          {convertShapeToPath: true},
-          {convertTransform: true},
-          {mergePaths: true},
-          {minifyStyles: true},
-          {moveElemsAttrsToGroup: true},
-          {removeAttrs: {
-            attrs: [
-              'clip.*',
-              'fill.*',
-              'stroke.*'
-            ]}
-          },
-          {removeComments: true},
-          {removeDesc: true},
-          {removeDimensions: true},
-          {removeDoctype: true},
-          {removeEditorsNSData: true},
-          {removeEmptyAttrs: true},
-          {removeEmptyContainers: true},
-          {removeEmptyText: true},
-          {removeHiddenElems: true},
-          {removeMetadata: true},
-          {removeNonInheritableGroupAttrs: true},
-          {removeOffCanvasPaths: true},
-          {removeScriptElement: true},
-          {removeStyleElement: true},
-          {removeTitle: true},
-          {removeUnknownsAndDefaults: true},
-          {removeUnusedNS: true},
-          {removeUselessStrokeAndFill: true},
-          {removeXMLProcInst: true},
-          {sortAttrs: true}
-        ]
-      })
-    ]))
-    .pipe(rename({
-      prefix: 'icon_'
-    }))
-    .pipe(svgSprite({
-      dest: './',
-      mode: {
-        symbol: {
-          dest: './',
-          inline: true,
-          sprite: 'sprite.symbol.svg'
-        }
-      },
-      svg: {
-        dimensionAttributes: false
-      }
-    }))
-    .pipe(debug({
-      title: 'SVG Sprite Symbol:'
-    }))
-    .pipe(gulp.dest(paths.svgSpriteSymbol.build))
-}
-
 function fonts() {
   return gulp.src(paths.fonts.source)
     .pipe(newer(paths.fonts.build))
@@ -517,17 +320,20 @@ function fonts() {
 }
 
 function clean() {
-  return del('./build/*')
+  return del([
+    './build/*'
+  ])
 }
 
 function watch() {
-  if(argv.sync){
+  if (argv.sync) {
     browserSync.init({
-      host: 'localhost',
+      host: "192.168.1.38",
       notify: false,
+      online: true,
       port: 7000,
       server: './build/',
-      tunnel: 'development-site',
+      tunnel: 'development',
       ui: false
     })
   }
@@ -536,11 +342,9 @@ function watch() {
   gulp.watch(paths.scripts.watch, scripts)
   gulp.watch(paths.images.watch, images)
   gulp.watch(paths.imagesWebp.watch, imagesWebp)
+  gulp.watch(paths.spriteSvg.watch, spriteSvg)
   gulp.watch(paths.favicons.watch, favicons)
-  gulp.watch(paths.pngSprite.watch, pngSprite)
-  gulp.watch(paths.svgSpriteStack.watch, svgSpriteStack)
-  gulp.watch(paths.svgSpriteSymbol.watch, svgSpriteSymbol)
   gulp.watch(paths.fonts.watch, fonts)
 }
 
-gulp.task('default', gulp.series(clean, pngSprite, svgSpriteStack, svgSpriteSymbol, styles, views, scripts, images, imagesWebp, favicons, fonts, watch))
+gulp.task('default', gulp.series(clean, spriteSvg, views, styles, scripts, images, imagesWebp, favicons, fonts, watch))
