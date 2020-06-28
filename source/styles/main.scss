@@ -1,9 +1,8 @@
-@import "./services/optimizer";
-@import "./library/library";
-@import "./helpers/variables";
-@import "./helpers/mixins";
-@import "./helpers/spriteSvg";
-@import "./services/fonts";
-@import "./services/common";
-@import "./../components/components";
-@import "./../blocks/blocks";
+@import "helpers/sprite";
+@import "helpers/variables";
+@import "services/optimizer";
+@import "services/fonts";
+@import "services/core";
+@import "library/library";
+@import "../components/components";
+@import "../blocks/blocks";

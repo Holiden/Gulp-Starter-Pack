@@ -20,8 +20,6 @@ const postCSS = require('gulp-postcss');
 const autoPrefixer = require('autoprefixer');
 const cssMin = require('gulp-clean-css');
 
-const concat = require('gulp-concat');
-const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 
 const imageMin = require('gulp-imagemin');
@@ -34,70 +32,67 @@ const favicon = require('gulp-favicons');
 
 const paths = {
   views: {
-    source: './source/views/**/*.html',
-    build: './build/',
+    source: 'source/views/**/*.html',
+    build: 'build/',
     watch: [
-      './source/blocks/**/*.html',
-      './source/components/**/*.html',
-      './source/views/**/*.html'
+      'source/blocks/**/*.html',
+      'source/components/**/*.html',
+      'source/views/**/*.html'
     ]
   },
   styles: {
-    source: './source/styles/main.{css,scss}',
-    build: './build/styles/',
+    source: 'source/styles/main.{css,scss}',
+    build: 'build/styles/',
     watch: [
-      './source/blocks/**/*.{css,scss}',
-      './source/components/**/*.{css,scss}',
-      './source/styles/**/*.{css,scss}'
+      'source/blocks/**/*.{css,scss}',
+      'source/components/**/*.{css,scss}',
+      'source/styles/**/*.{css,scss}'
     ]
   },
   scripts: {
-    source: './source/scripts/**/*.js',
-    build: './build/scripts/',
+    source: 'source/scripts/main.js',
+    build: 'build/scripts/',
     watch: [
-      './source/blocks/**/*.js',
-      './source/components/**/*.js',
-      './source/scripts/**/*.js'
+      'source/blocks/**/*.js',
+      'source/components/**/*.js',
+      'source/scripts/**/*.js'
     ]
   },
   images: {
     source: [
-      './source/images/*.{gif,jpg,jpeg,png,svg}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/svg/*.svg'
+      'source/images/*.{gif,jpg,jpeg,png,svg}',
+      '!source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!source/images/svg/*.svg'
     ],
-    build: './build/images/',
+    build: 'build/images/',
     watch: [
-      './source/images/*.{gif,jpg,jpeg,png,svg}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}',
-      '!./source/images/svg/*.svg'
+      'source/images/*.{gif,jpg,jpeg,png,svg}',
+      '!source/images/favicons/*.{gif,jpg,jpeg,png}',
+      '!source/images/svg/*.svg'
     ]
   },
   imagesWebp: {
-    source: [
-      './source/images/*.{gif,jpg,jpeg,png}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
-    ],
-    build: './build/images/',
-    watch: [
-      './source/images/*.{gif,jpg,jpeg,png}',
-      '!./source/images/favicons/*.{gif,jpg,jpeg,png}'
-    ]
+    source: 'source/images/*.{gif,jpg,jpeg,png}',
+    build: 'build/images/',
+    watch: 'source/images/*.{gif,jpg,jpeg,png}'
   },
-  spriteSvg: {
-    source: './source/images/svg/*.svg',
-    build: './build/images/sprites/',
-    watch: './source/images/svg/*.svg'
+  sprite: {
+    source: 'source/images/svg/*.svg',
+    build: 'build/images/sprites/',
+    watch: 'source/images/svg/*.svg'
   },
   favicons: {
-    source: './source/images/favicons/*.{gif,jpg,jpeg,png}',
-    build: './build/images/favicons/',
-    watch: './source/images/favicons/*.{gif,jpg,jpeg,png}'
+    source: [
+      'source/images/favicons/*.{jpg,jpeg,png,svg}',
+      '!source/images/favicons/favicon.{jpg,jpeg,png,svg}'
+    ],
+    build: 'build/images/favicons/',
+    watch: 'source/images/favicons/*.{jpg,jpeg,png,svg}'
   },
   fonts: {
-    source: './source/fonts/**/*.{woff,woff2}',
-    build: './build/fonts/',
-    watch: './source/fonts/**/*.{woff,woff2}'
+    source: 'source/fonts/**/*.{woff,woff2}',
+    build: 'build/fonts/',
+    watch: 'source/fonts/**/*.{woff,woff2}'
   }
 };
 
@@ -127,7 +122,7 @@ function views() {
       title: 'HTML:'
     }))
     .pipe(gulp.dest(paths.views.build))
-    .on('end', browserSync.reload)
+    .on('end', browserSync.reload);
 }
 
 function styles() {
@@ -153,14 +148,14 @@ function styles() {
     .pipe(gulpIf(argv.build, rename({
       suffix: '.min'
     })))
-    .pipe(gulpIf(argv.dev, sourceMaps.write('./maps/', {
+    .pipe(gulpIf(argv.dev, sourceMaps.write('maps/', {
       addComment: false
     })))
     .pipe(debug({
       title: 'CSS:'
     }))
     .pipe(gulp.dest(paths.styles.build))
-    .pipe(browserSync.stream())
+    .pipe(browserSync.stream());
 }
 
 function scripts() {
@@ -178,57 +173,51 @@ function scripts() {
       prefix: '//='
     }))
     .pipe(gulpIf(argv.dev, sourceMaps.init()))
-    .pipe(concat('main.js'))
-    .pipe(babel({
-      presets: [
-        '@babel/env'
-      ]
-    }))
     .pipe(gulpIf(argv.build, uglify()))
     .pipe(gulpIf(argv.build, rename({
       suffix: '.min'
     })))
-    .pipe(gulpIf(argv.dev, sourceMaps.write('./maps/', {
+    .pipe(gulpIf(argv.dev, sourceMaps.write('maps/', {
       addComment: false
     })))
     .pipe(debug({
       title: 'JS:'
     }))
     .pipe(gulp.dest(paths.scripts.build))
-    .on('end', browserSync.reload)
+    .on('end', browserSync.reload);
 }
 
 function images() {
   return gulp.src(paths.images.source)
     .pipe(newer(paths.images.build))
     .pipe(gulpIf(argv.build, imageMin([
-      imageMinJpeg({
-        smooth: 10,
-        quality: 70
-      }),
       imageMin.gifsicle({
         interlaced: true,
         optimizationLevel: 3
       }),
-      imageMin.svgo({
-        plugins: [
-          {cleanupListOfValues: true},
-          {removeOffCanvasPaths: true},
-          {removeScriptElement: true},
-          {sortAttrs: true}
-        ]
+      imageMinJpeg({
+        smooth: 10,
+        quality: 70
       }),
       imageMinPng({
         dithering: 0.4,
         speed: 1,
         strip: true,
         quality: [0, 1]
+      }),
+      imageMin.svgo({
+        plugins: [
+          { cleanupListOfValues: true },
+          { removeOffCanvasPaths: true },
+          { removeScriptElement: true },
+          { sortAttrs: true }
+        ]
       })
     ])))
     .pipe(debug({
       title: 'Images:'
     }))
-    .pipe(gulp.dest(paths.images.build))
+    .pipe(gulp.dest(paths.images.build));
 }
 
 function imagesWebp() {
@@ -248,31 +237,30 @@ function imagesWebp() {
     .pipe(debug({
       title: 'ImagesWebp:'
     }))
-    .pipe(gulp.dest(paths.imagesWebp.build))
+    .pipe(gulp.dest(paths.imagesWebp.build));
 }
 
-function spriteSvg() {
-  return gulp.src(paths.spriteSvg.source)
-    .pipe(gulpIf(argv.build,imageMin([
+function sprite() {
+  return gulp.src(paths.sprite.source)
+    .pipe(gulpIf(argv.build, imageMin([
       imageMin.svgo({
         plugins: [
-          {cleanupListOfValues: true},
-          {removeOffCanvasPaths: true},
-          {removeScriptElement: true},
-          {sortAttrs: true}
+          { cleanupListOfValues: true },
+          { removeOffCanvasPaths: true },
+          { removeScriptElement: true },
+          { sortAttrs: true }
         ]
       })
     ])))
     .pipe(svgSprite({
-      dest: './',
       mode: {
         stack: {
-          dest: './',
+          dest: '',
           prefix: '',
           render: {
             scss: {
-              dest: './../../../source/styles/helpers/spriteSvg.scss',
-              template: './source/styles/helpers/spriteSvg.handlebars'
+              dest: '../../../source/styles/helpers/sprite.scss',
+              template: 'source/styles/helpers/sprite.hbs'
             }
           },
           sprite: 'sprite.svg'
@@ -284,14 +272,15 @@ function spriteSvg() {
     }))
     .pipe(replace('-dims', ''))
     .pipe(debug({
-      title: 'Sprite SVG:'
+      title: 'Svg sprite:'
     }))
-    .pipe(gulp.dest(paths.spriteSvg.build))
+    .pipe(gulp.dest(paths.sprite.build));
 }
 
 function favicons() {
   return gulp.src(paths.favicons.source)
     .pipe(newer(paths.favicons.build))
+    .pipe(gulp.dest(paths.favicons.build))
     .pipe(favicon({
       icons: {
         android: false,
@@ -307,7 +296,7 @@ function favicons() {
     .pipe(debug({
       title: 'Favicons:'
     }))
-    .pipe(gulp.dest(paths.favicons.build))
+    .pipe(gulp.dest(paths.favicons.build));
 }
 
 function fonts() {
@@ -316,35 +305,33 @@ function fonts() {
     .pipe(debug({
       title: 'Fonts:'
     }))
-    .pipe(gulp.dest(paths.fonts.build))
+    .pipe(gulp.dest(paths.fonts.build));
 }
 
 function clean() {
-  return del([
-    './build/*'
-  ])
+  return del('build/*');
 }
 
 function watch() {
   if (argv.sync) {
     browserSync.init({
-      host: "192.168.1.38",
+      host: '192.168.1.38',
       notify: false,
       online: true,
       port: 7000,
-      server: './build/',
-      tunnel: 'development',
+      server: 'build/',
       ui: false
-    })
+    });
   }
-  gulp.watch(paths.views.watch, views)
-  gulp.watch(paths.styles.watch, styles)
-  gulp.watch(paths.scripts.watch, scripts)
-  gulp.watch(paths.images.watch, images)
-  gulp.watch(paths.imagesWebp.watch, imagesWebp)
-  gulp.watch(paths.spriteSvg.watch, spriteSvg)
-  gulp.watch(paths.favicons.watch, favicons)
-  gulp.watch(paths.fonts.watch, fonts)
+
+  gulp.watch(paths.views.watch, views);
+  gulp.watch(paths.styles.watch, styles);
+  gulp.watch(paths.scripts.watch, scripts);
+  gulp.watch(paths.images.watch, images);
+  gulp.watch(paths.imagesWebp.watch, imagesWebp);
+  gulp.watch(paths.sprite.watch, sprite);
+  gulp.watch(paths.favicons.watch, favicons);
+  gulp.watch(paths.fonts.watch, fonts);
 }
 
-gulp.task('default', gulp.series(clean, spriteSvg, views, styles, scripts, images, imagesWebp, favicons, fonts, watch))
+gulp.task('default', gulp.series(clean, sprite, views, styles, scripts, images, imagesWebp, favicons, fonts, watch));

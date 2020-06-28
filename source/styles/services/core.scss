@@ -1,9 +1,13 @@
 .main-page {
-  font-weight: $font-weight;
-  font-size: $font-size;
-  line-height: $line-height;
   font-family: $font-family;
-  color: $color-black;
+  font-weight: 400;
+  font-size: 16px;
+  color: $color-text;
+  @include logo(50% 0, 20px 20px);
+
+  &.active {
+    overflow-y: hidden;
+  }
 }
 
 .visually-hidden {

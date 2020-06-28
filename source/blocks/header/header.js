@@ -1,6 +1,8 @@
+const page = document.querySelector('.main-page');
+const navigationMenuButton = document.querySelector('.menu');
+const navigationMenu = document.querySelector('.navigation');
+
 (function () {
-  const navigationMenuButton = document.querySelector('.menu');
-  const navigationMenu = document.querySelector('.navigation');
 
   const isMenuHiddenCheck = () => {
     let attributeValueExpanded = navigationMenuButton.getAttribute('aria-expanded');
@@ -20,8 +22,9 @@
   };
 
   const toggleNavigationMenu = () => {
-    navigationMenuButton.classList.toggle('menu--active');
-    navigationMenu.classList.toggle('navigation--active');
+    page.classList.toggle('active');
+    navigationMenuButton.classList.toggle('active');
+    navigationMenu.classList.toggle('active');
   };
 
   navigationMenuButton.addEventListener('click', () => {

@@ -50,6 +50,10 @@ abbr[title] {
   text-decoration: underline;
 }
 
+address {
+  font-style: normal;
+}
+
 blockquote {
   margin: 0;
 }
@@ -66,13 +70,20 @@ small {
   font-size: 80%;
 }
 
+iframe {
+  width: 100%;
+  border: none;
+}
+
+picture {
+  display: block;
+}
+
 img {
-  height: auto;
-  max-width: 100%;
+  width: 100%;
   font-style: italic;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 16px;
   color: #000000;
 }
 

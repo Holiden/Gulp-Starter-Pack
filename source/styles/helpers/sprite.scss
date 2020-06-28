@@ -1,0 +1,7 @@
+@mixin logo($position, $size) {
+  background-image: url("../images/sprites/sprite.svg#logo");
+  background-position: $position;
+  background-size: $size;
+  background-repeat: no-repeat;
+}
+
